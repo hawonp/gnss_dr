@@ -4,4 +4,6 @@
     <string name="settings">Settings</string>
     <string name="map">Map</string>
     <string name="log">Log</string>
+    <string name="title">Title</string>
+    <string name="subtitle">Subtitle</string>
 </resources>
