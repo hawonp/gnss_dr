@@ -16,24 +16,31 @@ import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 
 public class LogFragment extends Fragment {
 
-    private LogViewModel homeViewModel;
+    private LogViewModel logViewModel;
     private FragmentLogBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(LogViewModel.class);
+        logViewModel = new ViewModelProvider(this).get(LogViewModel.class);
 
         binding = FragmentLogBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
+        // import UI items
+        final TextView text_title = binding.textLogTitle;
+        final TextView text_subtitle = binding.textLogSubtitle;
+
+
+
+        logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
+            text_title.setText(s);
         });
+
+        logViewModel.getSubtitle().observe(getViewLifecycleOwner(), s -> {
+            text_subtitle.setText(s);
+        });
+
+
         return root;
     }
 
