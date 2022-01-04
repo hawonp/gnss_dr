@@ -6,4 +6,9 @@
     <string name="log">Log</string>
     <string name="title">Title</string>
     <string name="subtitle">Subtitle</string>
+    <string name="track_satellites">Track Satellites</string>
+    <string name="lat">Lat:</string>
+    <string name="textview">TextView</string>
+    <string name="speed">Speed:</string>
+    <string name="height">Height</string>
 </resources>

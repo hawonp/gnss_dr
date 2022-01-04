@@ -28,17 +28,11 @@ public class LogFragment extends Fragment {
 
         // import UI items
         final TextView text_title = binding.textLogTitle;
-        final TextView text_subtitle = binding.textLogSubtitle;
-
-
 
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
             text_title.setText(s);
         });
 
-        logViewModel.getSubtitle().observe(getViewLifecycleOwner(), s -> {
-            text_subtitle.setText(s);
-        });
 
 
         return root;
