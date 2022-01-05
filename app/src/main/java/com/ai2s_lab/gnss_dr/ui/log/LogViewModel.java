@@ -1,5 +1,6 @@
 package com.ai2s_lab.gnss_dr.ui.log;
 
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
@@ -11,9 +12,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 public class LogViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
-
     private MutableLiveData<String> text_title;
 
+    // Control elements of this fragment
+    private Switch logSwitch;
 
     public LogViewModel() {
 //        mText = new MutableLiveData<>();
