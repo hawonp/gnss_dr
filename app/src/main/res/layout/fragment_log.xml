@@ -54,7 +54,7 @@
                     android:id="@+id/text_log_lat_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/textview" />
+                    android:text="-1" />
 
                 <TextView
                     android:id="@+id/text_log_long_title"
@@ -70,7 +70,7 @@
                     android:id="@+id/text_log_long_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/textview" />
+                    android:text="-1" />
             </TableRow>
 
             <TableRow
@@ -91,7 +91,7 @@
                     android:id="@+id/text_log_speed_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/textview" />
+                    android:text="-1" />
 
                 <TextView
                     android:id="@+id/text_log_height_title"
@@ -107,7 +107,7 @@
                     android:id="@+id/text_log_height_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="-1"
                     tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
             </TableRow>
 
@@ -129,7 +129,7 @@
                     android:id="@+id/text_log_num_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/textview" />
+                    android:text="-1" />
 
                 <TextView
                     android:id="@+id/text_log_bearing_title"
@@ -145,7 +145,7 @@
                     android:id="@+id/text_log_bearing_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
+                    android:text="-1"
                     tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
 
             </TableRow>
