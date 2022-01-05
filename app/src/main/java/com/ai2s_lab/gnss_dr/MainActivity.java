@@ -2,10 +2,14 @@ package com.ai2s_lab.gnss_dr;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        // request permissions
+        // request manage file access permissions
         if(android.os.Environment.isExternalStorageManager()){
             Log.d(TAG,"manage storage set");
         } else {
@@ -66,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 startActivity(intent);
             }
+
         }
 
-
+        // request other permissions
         permissionSupport = new PermissionSupport(this, this);
         if(permissionSupport.arePermissionsEnabled()){
             Log.d(TAG, "All Permissions Granted");
@@ -83,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "All Permissions Granted Confirmation");
         }
     }
-
 
 
 

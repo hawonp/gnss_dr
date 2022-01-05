@@ -1,6 +1,11 @@
 package com.ai2s_lab.gnss_dr.ui.log;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +22,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.ai2s_lab.gnss_dr.MainActivity;
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class LogFragment extends Fragment {
 
@@ -32,9 +42,6 @@ public class LogFragment extends Fragment {
     private Switch switch_log;
     private Logger logger;
 
-    private Boolean isLogging;
-    private Boolean saveFile;
-
     private final String LOG = "LOG";
 
 
@@ -45,37 +52,54 @@ public class LogFragment extends Fragment {
         binding = FragmentLogBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // import UI items
+        // initialize UI elements
         final TextView text_title = binding.textLogTitle;
 
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
         btn_stop = binding.btnLogStop;
 
+        // not needed anymore
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
             text_title.setText(s);
         });
 
+        // states for logging buttons
+
+        btn_stop.setEnabled(false);
+        btn_reset.setEnabled(false);
+
+
+
+        // action handlers for logging buttons
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), "User has stopped logging!", Snackbar.LENGTH_SHORT).show();
                 Log.d(LOG, "User has stopped logging!");
-                isLogging = false;
+
+                btn_start.setEnabled(true);
+                btn_stop.setEnabled(false);
+                btn_reset.setEnabled(false);
             }
         });
 
         btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(getActivity().findViewById(android.R.id.content), "User has started logging!", Snackbar.LENGTH_SHORT).show();
-                Log.d(LOG, "User has started logging!");
-                isLogging = true;
-                logger = new Logger();
+                @Override
+                public void onClick(View view) {
 
-                logger.logData("no u");
-            }
-        });
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "User has started logging!", Snackbar.LENGTH_SHORT).show();
+                    Log.d(LOG, "User has started logging!");
+
+                    logger = new Logger(getActivity());
+
+                    btn_start.setEnabled(false);
+                    btn_stop.setEnabled(true);
+                    btn_reset.setEnabled(true);
+
+                }
+            });
+
 
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
