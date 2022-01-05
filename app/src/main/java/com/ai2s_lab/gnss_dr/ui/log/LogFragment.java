@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.ai2s_lab.gnss_dr.MainActivity;
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
+import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -41,6 +42,7 @@ public class LogFragment extends Fragment {
     private Button btn_stop;
     private Switch switch_log;
     private Logger logger;
+    private GnssRetriever gnss_retriever;
 
     private final String LOG = "LOG";
 
@@ -92,6 +94,8 @@ public class LogFragment extends Fragment {
                     Log.d(LOG, "User has started logging!");
 
                     logger = new Logger(getActivity());
+                    gnss_retriever = new GnssRetriever(getActivity().getApplicationContext());
+                    gnss_retriever.printGnssData();
 
                     btn_start.setEnabled(false);
                     btn_stop.setEnabled(true);
