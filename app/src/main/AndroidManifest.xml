@@ -4,6 +4,10 @@
     <!-- Permissions required for this app. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+
 
     <application
         android:allowBackup="true"
@@ -12,10 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gnss_dr">
-        <activity
-            android:name=".BottomNavActivity"
-            android:exported="false"
-            android:label="@string/title_activity_bottom_nav" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,9 @@ public class LogFragment extends Fragment {
 
     private LogViewModel logViewModel;
     private FragmentLogBinding binding;
+    private Button btn_start;
+    private Button btn_reset;
+    private Button btn_stop;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,9 +33,14 @@ public class LogFragment extends Fragment {
         // import UI items
         final TextView text_title = binding.textLogTitle;
 
+        btn_reset = binding.btnLogReset;
+        btn_start = binding.btnLogStart;
+        btn_stop = binding.btnLogStop;
+
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
             text_title.setText(s);
         });
+
 
 
 
