@@ -1,6 +1,8 @@
 package com.ai2s_lab.gnss_dr.gnss;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -9,6 +11,7 @@ import android.location.LocationRequest;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
@@ -25,11 +28,21 @@ public class GnssRetriever {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
             double altitude = location.getAltitude();
+            double horizontal_accuracy = location.getAccuracy();
+            double bearing = location.getBearing();
+            double speed = location.getSpeed();
+
+
+            String provider = location.getProvider();
 
 
             Log.i(TAG, "lat: " + latitude);
             Log.i(TAG, "long: " + longitude);
             Log.i(TAG, "alt: " + altitude);
+            Log.i(TAG, "acc: " + horizontal_accuracy);
+            Log.i(TAG, "bearing: " + bearing);
+            Log.i(TAG, "speed: " + speed);
+            Log.i(TAG, "provider: " + provider);
         }
     };
 
@@ -51,16 +64,17 @@ public class GnssRetriever {
     };
 
     public GnssRetriever(Context context) {
-        this.my_location_manager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
     public void printGnssData() {
         boolean isEnabled = my_location_manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isEnabled) {
             my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0.0f, my_location_listener);
+//            my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
         }
 
-//        my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
+
 
     }
 

@@ -60,6 +60,7 @@ public class LogFragment extends Fragment {
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
         btn_stop = binding.btnLogStop;
+        switch_log = binding.switchLogTrack;
 
         // not needed anymore
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
@@ -70,6 +71,7 @@ public class LogFragment extends Fragment {
 
         btn_stop.setEnabled(false);
         btn_reset.setEnabled(false);
+        switch_log.setChecked(false);
 
 
 
