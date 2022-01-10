@@ -72,6 +72,7 @@ public class LogFragment extends Fragment {
 
         btn_stop.setEnabled(false);
         btn_reset.setEnabled(false);
+        switch_log.setChecked(false);
 
         //initialise retriever
         gnss_retriever = new GnssRetriever(getActivity().getApplicationContext());
