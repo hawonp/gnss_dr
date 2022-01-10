@@ -100,28 +100,20 @@ public class GnssRetriever {
         switch(type_no) {
             case 0:
                 return "Unknown";
-                break;
             case 1:
                 return "GPS";
-                break;
             case 2:
                 return "SBAS";
-                break;
             case 3:
                 return "GLONASS";
-                break;
             case 4:
                 return "QZSS";
-                break;
             case 5:
                 return "Beidou";
-                break;
             case 6:
                 return "Galileo";
-                break;
             case 7:
                 return "IRNSS";
-                break;
         }
         return "ERROR";
     }
