@@ -17,7 +17,6 @@ import androidx.core.app.ActivityCompat;
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
 
-    private boolean log_data = false;
     private int log_frequency = 100;
     private final LocationManager my_location_manager;
 
@@ -38,13 +37,13 @@ public class GnssRetriever {
             String provider = location.getProvider();
 
 
-            Log.i(TAG, "lat: " + latitude);
-            Log.i(TAG, "long: " + longitude);
-            Log.i(TAG, "alt: " + altitude);
-            Log.i(TAG, "acc: " + horizontal_accuracy);
-            Log.i(TAG, "bearing: " + bearing);
-            Log.i(TAG, "speed: " + speed);
-            Log.i(TAG, "provider: " + provider);
+            Log.d(TAG, "lat: " + latitude
+                    + " long: " + longitude
+                    + " alt: " + altitude
+                    + " acc: " + horizontal_accuracy
+                    + " bearing: " + bearing
+                    + " speed: " + speed);
+            Log.d(TAG, "provider: " + provider);
         }
     };
 
@@ -60,10 +59,21 @@ public class GnssRetriever {
         @Override
         public void onSatelliteStatusChanged(GnssStatus status) {
             int satCount = status.getSatelliteCount();
-            
 
             Log.i(TAG, "satellite count: " + satCount);
+            for (int i = 0; i < satCount; i++) {
+                int sat_type = status.getConstellationType(i);
+                boolean sat_is_used = status.usedInFix(i);
+                double sat_elevation = status.getElevationDegrees(i);
+                double sat_azim_degree = status.getAzimuthDegrees(i);
+                double sat_car_t_noise_r = status.getCn0DbHz(i);
 
+                Log.d(TAG, "  constellation type: " + sat_type
+                        + " satellite used: " + sat_is_used
+                        + " elevation: " + sat_elevation
+                        + " azimuth: " + sat_azim_degree
+                        + " carrier2noiseR: " + sat_car_t_noise_r);
+            }
         }
     };
 
@@ -82,9 +92,10 @@ public class GnssRetriever {
 
     public void stopGettingData() {
         my_location_manager.removeUpdates(my_location_listener);
-
-//        my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
+        my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
     }
+
+
 
     //get
     //log_frequency

@@ -47,8 +47,13 @@ public class LogFragment extends Fragment {
     private Logger logger;
     private GnssRetriever gnss_retriever;
 
-
     private TextView text_log;
+    private TextView tv_lat;
+    private TextView tv_long;
+    private TextView tv_speed;
+    private TextView tv_height;
+    private TextView tv_num_sat;
+    private TextView tv_bearing;
 
     private final String LOG = "LOG";
 
@@ -67,6 +72,13 @@ public class LogFragment extends Fragment {
         btn_start = binding.btnLogStart;
         btn_stop = binding.btnLogStop;
         switch_log = binding.switchLogTrack;
+
+        tv_lat = binding.textLogLatValue;
+        tv_long = binding.textLogLongValue;
+        tv_speed = binding.textLogSpeedValue;
+        tv_height = binding.textLogHeightValue;
+        tv_num_sat = binding.textLogNumValue;
+        tv_bearing = binding.textLogBearingValue;
 
         // not needed anymore
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
@@ -143,6 +155,9 @@ public class LogFragment extends Fragment {
 
         return root;
     }
+//    public void updateUIComponents() {
+//        tv_lat.setText();
+//    }
 
     @Override
     public void onDestroyView() {
