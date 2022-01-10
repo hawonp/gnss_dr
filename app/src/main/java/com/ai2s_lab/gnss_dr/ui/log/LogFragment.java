@@ -30,6 +30,8 @@ import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.w3c.dom.Text;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -44,6 +46,9 @@ public class LogFragment extends Fragment {
     private Switch switch_log;
     private Logger logger;
     private GnssRetriever gnss_retriever;
+
+
+    private TextView text_log;
 
     private final String LOG = "LOG";
 
@@ -68,6 +73,9 @@ public class LogFragment extends Fragment {
             text_title.setText(s);
         });
 
+        text_log = binding.textLogFile;
+        text_log.setText("Not Logging GNSS Information Right now");
+
         // states for logging buttons
 
         btn_stop.setEnabled(false);
@@ -88,6 +96,8 @@ public class LogFragment extends Fragment {
                 btn_start.setEnabled(true);
                 btn_stop.setEnabled(false);
                 btn_reset.setEnabled(false);
+
+                text_log.setText("Not Logging GNSS Information Right now");
             }
         });
 
@@ -101,6 +111,7 @@ public class LogFragment extends Fragment {
 
                     logger = new Logger(getActivity());
 
+                    text_log.setText("Logging on \'" + logger.getFileName() + "\'");
                     btn_start.setEnabled(false);
                     btn_stop.setEnabled(true);
                     btn_reset.setEnabled(true);

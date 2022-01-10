@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import org.w3c.dom.Text;
+
 public class LogViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
     private MutableLiveData<String> text_title;
-
+    private MutableLiveData<String> text_log;
 
     public LogViewModel() {
 //        mText = new MutableLiveData<>();
@@ -22,6 +24,8 @@ public class LogViewModel extends ViewModel {
 
         text_title.setValue("Logging Values");
 
+        text_log = new MutableLiveData<>();
+        text_log.setValue("Not Logging GNSS Information Right now");
 
 
     }
@@ -31,4 +35,5 @@ public class LogViewModel extends ViewModel {
         return text_title;
     }
 
+    public LiveData<String> getLog() { return text_log; }
 }

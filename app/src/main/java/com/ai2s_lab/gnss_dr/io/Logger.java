@@ -35,8 +35,9 @@ public class Logger {
     private String file_path;
 
     private File file;
-    private FileWriter fileWriter;
-    private CSVWriter csvWriter;
+    private FileWriter file_writer;
+    private CSVWriter csv_writer;
+    private String [] first_line;
 
 //    private Context context;
     private Activity activity;
@@ -51,23 +52,10 @@ public class Logger {
 
         file = new File(file_path);
 
-        try {
-            if(file.exists() && !file.isDirectory()){
-                fileWriter = new FileWriter(file_path, true);
-                csvWriter = new CSVWriter(fileWriter);
-            } else {
-                file.createNewFile();
-                csvWriter = new CSVWriter(new FileWriter(file_path));
-            }
+        first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing"};
 
-            String [] first_line = {"Lat", "Long", "Speed", "Height", "NumSats", "Bearing"};
-            csvWriter.writeNext(first_line);
-            csvWriter.close();
+        writeALine(first_line);
 
-        } catch (IOException e){
-            Snackbar.make(activity.findViewById(android.R.id.content), "Could not create a log file!", Snackbar.LENGTH_SHORT).show();
-
-        }
         Log.d(TAG, file_name + " created");
         Snackbar.make(activity.findViewById(android.R.id.content), file_name + " created", Snackbar.LENGTH_SHORT).show();
 
@@ -81,19 +69,46 @@ public class Logger {
     }
 
     private String getCurrentTime(){
-        String currentDate = new SimpleDateFormat("yy_MM_dd", Locale.getDefault()).format(new Date());
-        String currentTime = new SimpleDateFormat("HH_mm_ss", Locale.getDefault()).format(new Date());
-        return currentDate + "_" + currentTime ;
+        String current_date = new SimpleDateFormat("yy_MM_dd", Locale.getDefault()).format(new Date());
+        String current_time = new SimpleDateFormat("HH_mm_ss", Locale.getDefault()).format(new Date());
+        return current_date + "_" + current_time ;
     }
 
     public void resetFile(){
         try {
             file.createNewFile();
+            csv_writer = new CSVWriter(new FileWriter(file_path));
+
+            csv_writer.writeNext(first_line);
+            csv_writer.close();
+
+
+
+
         } catch (IOException e){
             Snackbar.make(activity.findViewById(android.R.id.content), "Could not reset log file", Snackbar.LENGTH_SHORT).show();
 
         }
 
+    }
+
+    public void writeALine(String [] text) {
+        try {
+            if (file.exists() && !file.isDirectory()) {
+                file_writer = new FileWriter(file_path, true);
+                csv_writer = new CSVWriter(file_writer);
+            } else {
+                file.createNewFile();
+                csv_writer = new CSVWriter(new FileWriter(file_path));
+            }
+
+            csv_writer.writeNext(text);
+            csv_writer.close();
+
+        } catch (IOException e) {
+            Snackbar.make(activity.findViewById(android.R.id.content), "Could not create a log file!", Snackbar.LENGTH_SHORT).show();
+
+        }
     }
 
 
