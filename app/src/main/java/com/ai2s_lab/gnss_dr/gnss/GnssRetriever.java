@@ -60,8 +60,10 @@ public class GnssRetriever {
         @Override
         public void onSatelliteStatusChanged(GnssStatus status) {
             int satCount = status.getSatelliteCount();
+            
 
             Log.i(TAG, "satellite count: " + satCount);
+
         }
     };
 
@@ -74,9 +76,8 @@ public class GnssRetriever {
         boolean isEnabled = my_location_manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isEnabled) {
             my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, log_frequency, 0.0f, my_location_listener);
+            my_location_manager.registerGnssStatusCallback(gnss_status_listener, null);
         }
-
-//        my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
     }
 
     public void stopGettingData() {
