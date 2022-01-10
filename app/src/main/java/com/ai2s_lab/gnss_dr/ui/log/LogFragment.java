@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -60,6 +61,7 @@ public class LogFragment extends Fragment {
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
         btn_stop = binding.btnLogStop;
+        switch_log = binding.switchLogTrack;
 
         // not needed anymore
         logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
@@ -71,9 +73,11 @@ public class LogFragment extends Fragment {
         btn_stop.setEnabled(false);
         btn_reset.setEnabled(false);
 
-
+        //initialise retriever
+        gnss_retriever = new GnssRetriever(getActivity().getApplicationContext());
 
         // action handlers for logging buttons
+        //Stop button
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +90,7 @@ public class LogFragment extends Fragment {
             }
         });
 
+        //Start button
         btn_start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -94,8 +99,6 @@ public class LogFragment extends Fragment {
                     Log.d(LOG, "User has started logging!");
 
                     logger = new Logger(getActivity());
-                    gnss_retriever = new GnssRetriever(getActivity().getApplicationContext());
-                    gnss_retriever.printGnssData();
 
                     btn_start.setEnabled(false);
                     btn_stop.setEnabled(true);
@@ -104,12 +107,24 @@ public class LogFragment extends Fragment {
                 }
             });
 
-
+        //Reset button
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), "User has reset the log!", Snackbar.LENGTH_SHORT).show();
                 Log.d(LOG, "User has reset logging!");
+            }
+        });
+
+        //Log switch
+        switch_log.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    gnss_retriever.requestData();
+                } else {
+                    gnss_retriever.stopGettingData();
+                }
             }
         });
 

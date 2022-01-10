@@ -13,7 +13,8 @@ import androidx.annotation.NonNull;
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
 
-    private boolean my_log_data = false;
+    private boolean log_data = false;
+    private int log_frequency = 100;
     private final LocationManager my_location_manager;
 
     //Listener for Location data
@@ -54,14 +55,31 @@ public class GnssRetriever {
         this.my_location_manager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public void printGnssData() {
+    public void requestData() {
         boolean isEnabled = my_location_manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isEnabled) {
-            my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0.0f, my_location_listener);
+            my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, log_frequency, 0.0f, my_location_listener);
         }
 
 //        my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
+    }
 
+    public void stopGettingData() {
+        my_location_manager.removeUpdates(my_location_listener);
+
+//        my_location_manager.registerGnssMeasurementsCallback(gnss_status_listener);
+    }
+
+    //get
+    //log_frequency
+    public int getLogFrequency() {
+        return log_frequency;
+    }
+
+    //set
+    //log_frequency
+    public void setLogFrequency(int log_freq) {
+        log_frequency = log_freq;
     }
 
 }
