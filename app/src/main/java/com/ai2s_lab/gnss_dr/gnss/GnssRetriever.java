@@ -63,12 +63,13 @@ public class GnssRetriever {
             Log.i(TAG, "satellite count: " + satCount);
             for (int i = 0; i < satCount; i++) {
                 int sat_type = status.getConstellationType(i);
+                String sat_constellation_name = getConstellationName(sat_type);
                 boolean sat_is_used = status.usedInFix(i);
                 double sat_elevation = status.getElevationDegrees(i);
                 double sat_azim_degree = status.getAzimuthDegrees(i);
                 double sat_car_t_noise_r = status.getCn0DbHz(i);
 
-                Log.d(TAG, "  constellation type: " + sat_type
+                Log.d(TAG, "  constellation type: " + sat_constellation_name
                         + " satellite used: " + sat_is_used
                         + " elevation: " + sat_elevation
                         + " azimuth: " + sat_azim_degree
@@ -95,7 +96,35 @@ public class GnssRetriever {
         my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
     }
 
-
+    private String getConstellationName(int type_no) {
+        switch(type_no) {
+            case 0:
+                return "Unknown";
+                break;
+            case 1:
+                return "GPS";
+                break;
+            case 2:
+                return "SBAS";
+                break;
+            case 3:
+                return "GLONASS";
+                break;
+            case 4:
+                return "QZSS";
+                break;
+            case 5:
+                return "Beidou";
+                break;
+            case 6:
+                return "Galileo";
+                break;
+            case 7:
+                return "IRNSS";
+                break;
+        }
+        return "ERROR";
+    }
 
     //get
     //log_frequency
