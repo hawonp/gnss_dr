@@ -2,8 +2,10 @@ package com.ai2s_lab.gnss_dr.io;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -80,6 +82,53 @@ public class Logger {
         String currentDate = new SimpleDateFormat("yy_MM_dd", Locale.getDefault()).format(new Date());
         String currentTime = new SimpleDateFormat("HH_mm_ss", Locale.getDefault()).format(new Date());
         return currentDate + "_" + currentTime ;
+    }
+
+    public void resetFile(){
+        Uri contentUri = MediaStore.Files.getContentUri("external");
+        ContentResolver resolver = activity.getContentResolver();
+
+        String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
+        String[] selectionArgs = new String[]{Environment.DIRECTORY_DOCUMENTS + "/gnss_log_files/"};
+
+        Cursor cursor = resolver.query(contentUri, null, selection, selectionArgs, null);
+
+        Uri uri = null;
+
+        if(cursor.getCount() == 0){
+            Snackbar.make(activity.findViewById(android.R.id.content), "No File found", Snackbar.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()){
+                int index = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
+                String fileName = cursor.getString(index);
+                Log.d(TAG, fileName);
+                if(fileName.toLowerCase().equals(file_name + ".csv")){
+                    int temp = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
+                    long id = cursor.getLong(temp);
+
+                    uri = ContentUris.withAppendedId(contentUri, id);
+
+                    break;
+                }
+
+            }
+
+            if(uri == null){
+                Snackbar.make(activity.findViewById(android.R.id.content), "No File found", Snackbar.LENGTH_SHORT).show();
+            } else {
+                try {
+                    OutputStream outputStream = resolver.openOutputStream(uri, "rwt");
+                    outputStream.write("This is overwritten data".getBytes());
+                    outputStream.close();
+
+                    Snackbar.make(activity.findViewById(android.R.id.content), "File Written Successfully", Snackbar.LENGTH_SHORT).show();
+
+                } catch (IOException e){
+                    Snackbar.make(activity.findViewById(android.R.id.content), "Failed to write file", Snackbar.LENGTH_SHORT).show();
+
+                }
+            }
+        }
     }
 
 }

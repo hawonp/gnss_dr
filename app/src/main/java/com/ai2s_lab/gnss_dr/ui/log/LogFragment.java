@@ -114,6 +114,7 @@ public class LogFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), "User has reset the log!", Snackbar.LENGTH_SHORT).show();
                 Log.d(LOG, "User has reset logging!");
+                logger.resetFile();
             }
         });
 

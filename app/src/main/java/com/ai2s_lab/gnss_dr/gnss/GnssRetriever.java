@@ -1,6 +1,7 @@
 package com.ai2s_lab.gnss_dr.gnss;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
@@ -68,6 +69,7 @@ public class GnssRetriever {
         this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    @SuppressLint("MissingPermission")
     public void requestData() {
         boolean isEnabled = my_location_manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isEnabled) {
