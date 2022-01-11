@@ -64,12 +64,14 @@ public class GnssRetriever {
             for (int i = 0; i < satCount; i++) {
                 int sat_type = status.getConstellationType(i);
                 String sat_constellation_name = getConstellationName(sat_type);
+                int sat_vid = status.getSvid(i);
                 boolean sat_is_used = status.usedInFix(i);
                 double sat_elevation = status.getElevationDegrees(i);
                 double sat_azim_degree = status.getAzimuthDegrees(i);
                 double sat_car_t_noise_r = status.getCn0DbHz(i);
 
-                Log.d(TAG, "  constellation type: " + sat_constellation_name
+                Log.d(TAG, " satellite ID: " + sat_vid
+                        + "  constellation type: " + sat_constellation_name
                         + " satellite used: " + sat_is_used
                         + " elevation: " + sat_elevation
                         + " azimuth: " + sat_azim_degree
