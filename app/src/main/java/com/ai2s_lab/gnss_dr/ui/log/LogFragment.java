@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -28,6 +29,8 @@ import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
+import com.ai2s_lab.gnss_dr.model.Satellite;
+import com.ai2s_lab.gnss_dr.util.LogListAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
@@ -35,6 +38,7 @@ import org.w3c.dom.Text;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class LogFragment extends Fragment {
 
@@ -43,7 +47,7 @@ public class LogFragment extends Fragment {
     private Button btn_start;
     private Button btn_reset;
     private Button btn_stop;
-    private Switch switch_log;
+    private Switch switch_gnss;
     private Logger logger;
     private GnssRetriever gnss_retriever;
 
@@ -55,8 +59,12 @@ public class LogFragment extends Fragment {
     private TextView tv_num_sat;
     private TextView tv_bearing;
 
+    private ListView listView;
+    private ArrayList<Satellite> satellites;
     private final String LOG = "LOG";
+    private LogListAdapter logListAdapter;
 
+    public boolean isLogging;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -71,7 +79,7 @@ public class LogFragment extends Fragment {
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
         btn_stop = binding.btnLogStop;
-        switch_log = binding.switchLogTrack;
+        switch_gnss = binding.switchLogTrack;
 
         tv_lat = binding.textLogLatValue;
         tv_long = binding.textLogLongValue;
@@ -92,10 +100,19 @@ public class LogFragment extends Fragment {
 
         btn_stop.setEnabled(false);
         btn_reset.setEnabled(false);
-        switch_log.setChecked(false);
+        switch_gnss.setChecked(false);
 
         //initialise retriever
-        gnss_retriever = new GnssRetriever(getActivity().getApplicationContext());
+        gnss_retriever = new GnssRetriever(getActivity().getApplicationContext(), this);
+
+
+        // adapter for listview
+        this.satellites = new ArrayList<>();
+
+
+        logListAdapter = new LogListAdapter(this.getContext(), satellites);
+        listView = binding.listLog;
+        listView.setAdapter(logListAdapter);
 
         // action handlers for logging buttons
         //Stop button
@@ -108,7 +125,7 @@ public class LogFragment extends Fragment {
                 btn_start.setEnabled(true);
                 btn_stop.setEnabled(false);
                 btn_reset.setEnabled(false);
-
+                isLogging = false;
                 text_log.setText("Not Logging GNSS Information Right now");
             }
         });
@@ -121,12 +138,19 @@ public class LogFragment extends Fragment {
                     Snackbar.make(getActivity().findViewById(android.R.id.content), "User has started logging!", Snackbar.LENGTH_SHORT).show();
                     Log.d(LOG, "User has started logging!");
 
-                    logger = new Logger(getActivity());
+                    if(switch_gnss.isChecked()){
+                        logger = new Logger(getActivity());
 
-                    text_log.setText("Logging on \'" + logger.getFileName() + "\'");
-                    btn_start.setEnabled(false);
-                    btn_stop.setEnabled(true);
-                    btn_reset.setEnabled(true);
+                        text_log.setText("Logging on \'" + logger.getFileName() + "\'");
+                        btn_start.setEnabled(false);
+                        btn_stop.setEnabled(true);
+                        btn_reset.setEnabled(true);
+                        isLogging = true;
+                    } else {
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), "GNSS Is Off", Snackbar.LENGTH_SHORT).show();
+
+                    }
+
 
                 }
             });
@@ -142,13 +166,15 @@ public class LogFragment extends Fragment {
         });
 
         //Log switch
-        switch_log.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        switch_gnss.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     gnss_retriever.requestData();
                 } else {
                     gnss_retriever.stopGettingData();
+                    resetList();
+                    resetUI();
                 }
             }
         });
@@ -163,5 +189,42 @@ public class LogFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public void updateChart(double lat, double lon, double alt, double bearing, double speed){
+        tv_lat.setText(Double.toString(lat));
+        tv_long.setText(Double.toString(lon));
+        tv_height.setText(Double.toString(alt));
+        tv_bearing.setText(Double.toString(bearing));
+        tv_speed.setText(Double.toString(speed));
+    }
+
+    public void updateSatNum(int satNum){
+        tv_num_sat.setText(Integer.toString(satNum));
+    }
+    public void updateList(ArrayList<Satellite> satellites){
+
+        this.satellites = satellites;
+        logListAdapter = new LogListAdapter(getActivity(), satellites);
+        listView = binding.listLog;
+        listView.setAdapter(logListAdapter);
+    }
+
+    public Logger getLogger() { return this.logger; }
+
+    public void resetList(){
+        this.satellites = new ArrayList<>();
+        logListAdapter = new LogListAdapter(getActivity(), satellites);
+        listView = binding.listLog;
+        listView.setAdapter(logListAdapter);
+    }
+
+    public void resetUI(){
+        tv_lat.setText("N/A");
+        tv_long.setText("N/A");
+        tv_speed.setText("N/A");
+        tv_height.setText("N/A");
+        tv_num_sat.setText("N/A");
+        tv_bearing.setText("N/A");
     }
 }

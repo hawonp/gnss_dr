@@ -52,7 +52,7 @@ public class Logger {
 
         file = new File(file_path);
 
-        first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing"};
+        first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
         writeALine(first_line);
 
@@ -81,9 +81,6 @@ public class Logger {
 
             csv_writer.writeNext(first_line);
             csv_writer.close();
-
-
-
 
         } catch (IOException e){
             Snackbar.make(activity.findViewById(android.R.id.content), "Could not reset log file", Snackbar.LENGTH_SHORT).show();

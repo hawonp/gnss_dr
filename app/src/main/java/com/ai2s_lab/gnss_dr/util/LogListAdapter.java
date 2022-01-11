@@ -9,48 +9,51 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ai2s_lab.gnss_dr.R;
+import com.ai2s_lab.gnss_dr.model.Satellite;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class LogListAdapter extends ArrayAdapter<String> {
+public class LogListAdapter extends ArrayAdapter<Satellite> {
 
-    private Activity activity;
+    private Context context;
 
-    private String id;
-    private String type;
-    private String cno;
-    private String elev;
-    private String azim;
+    private ArrayList<Satellite> satellites;
 
-    public LogListAdapter(Activity activity, String id, String type, String cno, String elev, String azim){
-        super(activity, R.layout.log_list_item);
+    public LogListAdapter(Context context, ArrayList<Satellite> satellites){
+        super(context, R.layout.log_list_item, satellites);
 
-        this.activity = activity;
-        this.id = id;
-        this.type = type;
-        this.cno = cno;
-        this.elev = elev;
-        this.azim = azim;
+        this.context = context;
+        this.satellites = satellites;
+    }
+
+    public void updateData(ArrayList<Satellite> satellites){
+        this.satellites = satellites;
     }
 
     public View getView(int position, View view, ViewGroup parent){
-        LayoutInflater inflater= activity.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.log_list_item, null,true);
+        if(view == null){
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            view = layoutInflater.inflate(R.layout.log_list_item, null);
 
-        TextView text_id = rowView.findViewById(R.id.log_item_id);
-        TextView text_type = rowView.findViewById(R.id.log_item_type);
-        TextView text_cno = rowView.findViewById(R.id.log_item_cno);
-        TextView text_elev = rowView.findViewById(R.id.log_item_elev);
-        TextView text_azim = rowView.findViewById(R.id.log_item_azim);
+        }
+        TextView text_id = view.findViewById(R.id.log_item_id);
+        TextView text_type = view.findViewById(R.id.log_item_type);
+        TextView text_cno = view.findViewById(R.id.log_item_cno);
+        TextView text_elev = view.findViewById(R.id.log_item_elev);
+        TextView text_azim = view.findViewById(R.id.log_item_azim);
 
-        text_id.setText(id);
-        text_type.setText(type);
-        text_cno.setText(cno);
-        text_elev.setText(elev);
-        text_azim.setText(azim);
+        Satellite satellite = satellites.get(position);
+        text_id.setText(Integer.toString(satellite.getId()));
+        text_type.setText(satellite.getType());
+        text_cno.setText(Double.toString(satellite.getCno()));
+        text_elev.setText(Double.toString(satellite.getElev()));
+        text_azim.setText(Double.toString(satellite.getAzim()));
 
-        return rowView;
+        return view;
     }
 }

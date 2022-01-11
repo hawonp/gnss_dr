@@ -2,6 +2,7 @@ package com.ai2s_lab.gnss_dr.gnss;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.GnssStatus;
@@ -10,15 +11,26 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationRequest;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import com.ai2s_lab.gnss_dr.R;
+import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
+import com.ai2s_lab.gnss_dr.model.Satellite;
+import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
+
+import java.util.ArrayList;
 
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
 
     private int log_frequency = 100;
     private final LocationManager my_location_manager;
+
+    private LogFragment logFragment;
+
 
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
@@ -33,9 +45,15 @@ public class GnssRetriever {
             double bearing = location.getBearing();
             double speed = location.getSpeed();
 
-
             String provider = location.getProvider();
 
+            logFragment.updateChart(latitude, longitude, altitude, bearing, speed);
+//            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
+
+            if(logFragment.isLogging){
+                String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing)};
+                logFragment.getLogger().writeALine(temp);
+            }
 
             Log.d(TAG, "lat: " + latitude
                     + " long: " + longitude
@@ -60,7 +78,20 @@ public class GnssRetriever {
         public void onSatelliteStatusChanged(GnssStatus status) {
             int satCount = status.getSatelliteCount();
 
+//            tv_num_sat.setText(satCount);
+
             Log.i(TAG, "satellite count: " + satCount);
+
+            //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
+
+            if(logFragment.isLogging){
+                String [] temp = {"", "", "", "", Integer.toString(satCount) , ""};
+                logFragment.getLogger().writeALine(temp);
+            }
+
+
+            ArrayList<Satellite> satellites = new ArrayList<>();
+
             for (int i = 0; i < satCount; i++) {
                 int sat_type = status.getConstellationType(i);
                 String sat_constellation_name = getConstellationName(sat_type);
@@ -76,12 +107,26 @@ public class GnssRetriever {
                         + " elevation: " + sat_elevation
                         + " azimuth: " + sat_azim_degree
                         + " carrier2noiseR: " + sat_car_t_noise_r);
+
+                Satellite satellite = new Satellite(sat_vid, sat_constellation_name, sat_is_used, sat_elevation, sat_azim_degree, sat_car_t_noise_r);
+                satellites.add(satellite);
+
+                if(logFragment.isLogging){
+                    String relativeNum = i+1 + "/" + satCount;
+                    String [] temp = {"", "", "", "", relativeNum, "", Integer.toString(sat_vid), sat_constellation_name, Boolean.toString(sat_is_used), Double.toString(sat_elevation), Double.toString(sat_azim_degree), Double.toString(sat_car_t_noise_r)};
+                    logFragment.getLogger().writeALine(temp);
+                }
             }
+
+
+            logFragment.updateList(satellites);
+            logFragment.updateSatNum(satCount);
         }
     };
 
-    public GnssRetriever(Context context) {
+    public GnssRetriever(Context context, LogFragment logFragment) {
         this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.logFragment = logFragment;
     }
 
     @SuppressLint("MissingPermission")
