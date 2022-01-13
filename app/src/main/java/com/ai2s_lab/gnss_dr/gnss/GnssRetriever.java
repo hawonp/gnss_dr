@@ -9,9 +9,10 @@ import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationRequest;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -26,11 +27,14 @@ import java.util.ArrayList;
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
 
-    private int log_frequency = 100;
+    //init location manager
     private final LocationManager my_location_manager;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     private LogFragment logFragment;
 
+    //Initial frequency for logging GNSS signals
+    private int log_frequency = 100;
 
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
@@ -146,6 +150,10 @@ public class GnssRetriever {
     public void stopGettingData() {
         my_location_manager.removeUpdates(my_location_listener);
         my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
+
+//        if (true) {
+//            fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
+//        }
     }
 
     private String getConstellationName(int type_no) {
