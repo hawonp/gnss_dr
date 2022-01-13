@@ -39,6 +39,7 @@ public class GnssRetriever {
         this.logFragment = logFragment;
     }
 
+
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
         private static final String TAG = "LocationListener";
