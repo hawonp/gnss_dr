@@ -12,8 +12,6 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
@@ -29,7 +27,6 @@ public class GnssRetriever {
 
     //init location manager
     private final LocationManager my_location_manager;
-    FusedLocationProviderClient fusedLocationProviderClient;
 
     private LogFragment logFragment;
 
@@ -149,10 +146,6 @@ public class GnssRetriever {
     public void stopGettingData() {
         my_location_manager.removeUpdates(my_location_listener);
         my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
-
-//        if (true) {
-//            fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
-//        }
     }
 
     private String getConstellationName(int type_no) {
