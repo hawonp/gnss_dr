@@ -31,6 +31,7 @@ import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.util.LogListAdapter;
+import com.ai2s_lab.gnss_dr.util.Settings;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
@@ -51,7 +52,9 @@ public class LogFragment extends Fragment {
     private Logger logger;
     private GnssRetriever gnss_retriever;
 
-    private TextView text_log;
+    private TextView tv_log_title;
+    private TextView tv_subtitle;
+
     private TextView tv_lat;
     private TextView tv_long;
     private TextView tv_speed;
@@ -73,8 +76,10 @@ public class LogFragment extends Fragment {
         binding = FragmentLogBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // initialize UI elements
-        final TextView text_title = binding.textLogTitle;
+
+        // initialize UI components
+        tv_log_title = binding.textLogTitle;
+        tv_subtitle = binding.textLogFile;
 
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
@@ -88,16 +93,24 @@ public class LogFragment extends Fragment {
         tv_num_sat = binding.textLogNumValue;
         tv_bearing = binding.textLogBearingValue;
 
-        // not needed anymore
-        logViewModel.getTitle().observe(getViewLifecycleOwner(), s -> {
-            text_title.setText(s);
-        });
+        // set default values
+        tv_subtitle.setText("No Logfile Created!");
+        if(Settings.getGpsChoice() == 1) {
+            tv_log_title.setText("Using FusedLocationProvider");
+            switch_gnss.setClickable(true);
 
-        text_log = binding.textLogFile;
-        text_log.setText("Not Logging GNSS Information Right now");
+        }
+        else if(Settings.getGpsChoice() == 2){
+            switch_gnss.setClickable(true);
+            tv_log_title.setText("Using GNSS");
+        }
+        else{
+            tv_log_title.setVisibility(View.INVISIBLE);
+            switch_gnss.setVisibility(View.INVISIBLE);
+
+        }
 
         // states for logging buttons
-
         btn_stop.setEnabled(false);
         btn_reset.setEnabled(false);
         switch_gnss.setChecked(false);
@@ -105,6 +118,19 @@ public class LogFragment extends Fragment {
         //initialise retriever
         gnss_retriever = new GnssRetriever(getActivity().getApplicationContext(), this);
 
+
+        // initialize switch
+        if(Settings.getGPS()){
+            switch_gnss.setChecked(true);
+            switch_gnss.setText("GPS On");
+            gnss_retriever.requestData();
+        } else{
+            gnss_retriever.stopGettingData();
+            switch_gnss.setText("GPS OFF");
+            switch_gnss.setChecked(false);
+            resetList();
+            resetUI();
+        }
 
         // adapter for listview
         this.satellites = new ArrayList<>();
@@ -126,7 +152,8 @@ public class LogFragment extends Fragment {
                 btn_stop.setEnabled(false);
                 btn_reset.setEnabled(false);
                 isLogging = false;
-                text_log.setText("Not Logging GNSS Information Right now");
+                tv_subtitle.setText("No Logfile Created!");
+
             }
         });
 
@@ -141,7 +168,7 @@ public class LogFragment extends Fragment {
                     if(switch_gnss.isChecked()){
                         logger = new Logger(getActivity());
 
-                        text_log.setText("Logging on \'" + logger.getFileName() + "\'");
+                        tv_subtitle.setText("Logging on \'" + logger.getFileName() + "\'");
                         btn_start.setEnabled(false);
                         btn_stop.setEnabled(true);
                         btn_reset.setEnabled(true);
@@ -171,10 +198,14 @@ public class LogFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     gnss_retriever.requestData();
+                    switch_gnss.setText("GPS On");
+                    Settings.toggleGPS();
                 } else {
                     gnss_retriever.stopGettingData();
+                    switch_gnss.setText("GPS OFF");
                     resetList();
                     resetUI();
+                    Settings.toggleGPS();
                 }
             }
         });
