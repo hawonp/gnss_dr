@@ -49,7 +49,6 @@ public class GnssRetriever {
 
             if(logFragment.isVisible()){
                 logFragment.updateChart(latitude, longitude, altitude, bearing, speed);
-
             }
 //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
