@@ -29,12 +29,15 @@ public class GnssRetriever {
 
     //init location manager
     private final LocationManager my_location_manager;
-    FusedLocationProviderClient fusedLocationProviderClient;
-
     private LogFragment logFragment;
 
     //Initial frequency for logging GNSS signals
     private int log_frequency = 100;
+
+    public GnssRetriever(Context context, LogFragment logFragment) {
+        this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.logFragment = logFragment;
+    }
 
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
@@ -132,10 +135,6 @@ public class GnssRetriever {
         }
     };
 
-    public GnssRetriever(Context context, LogFragment logFragment) {
-        this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        this.logFragment = logFragment;
-    }
 
     @SuppressLint("MissingPermission")
     public void requestData() {
