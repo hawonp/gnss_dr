@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -98,16 +100,15 @@ public class LogFragment extends Fragment {
         if(Settings.getGpsChoice() == 1) {
             tv_log_title.setText("Using FusedLocationProvider");
             switch_gnss.setClickable(true);
-
+            visibleUI();
         }
         else if(Settings.getGpsChoice() == 2){
             switch_gnss.setClickable(true);
             tv_log_title.setText("Using GNSS");
+            visibleUI();
         }
         else{
-            tv_log_title.setVisibility(View.INVISIBLE);
-            switch_gnss.setVisibility(View.INVISIBLE);
-
+            invisibleUI();
         }
 
         // states for logging buttons
@@ -257,5 +258,37 @@ public class LogFragment extends Fragment {
         tv_height.setText("N/A");
         tv_num_sat.setText("N/A");
         tv_bearing.setText("N/A");
+    }
+
+    public void invisibleUI(){
+        tv_log_title.setVisibility(View.INVISIBLE);
+        tv_subtitle.setVisibility(View.INVISIBLE);
+        switch_gnss.setVisibility(View.INVISIBLE);
+        CardView log_info =  binding.logInfo;
+        log_info.setVisibility(View.INVISIBLE);
+        CardView log_sats = binding.logSats;
+        log_sats.setVisibility(View.INVISIBLE);
+
+        LinearLayout log_btns = binding.logButtonLayout;
+        log_btns.setVisibility(View.INVISIBLE);
+
+        TextView tv_placeholder = binding.tvPlaceholder;
+        tv_placeholder.setText("Please select a GPS provider first!");
+    }
+
+    public void visibleUI(){
+        tv_log_title.setVisibility(View.VISIBLE);
+        tv_subtitle.setVisibility(View.VISIBLE);
+        switch_gnss.setVisibility(View.VISIBLE);
+        CardView log_info =  binding.logInfo;
+        log_info.setVisibility(View.VISIBLE);
+        CardView log_sats = binding.logSats;
+        log_sats.setVisibility(View.VISIBLE);
+
+        LinearLayout log_btns = binding.logButtonLayout;
+        log_btns.setVisibility(View.VISIBLE);
+
+        TextView tv_placeholder = binding.tvPlaceholder;
+        tv_placeholder.setVisibility(View.INVISIBLE);
     }
 }
