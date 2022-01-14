@@ -24,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -40,12 +41,17 @@ public class Logger {
     private String [] first_line;
 
 //    private Context context;
+
+    private ArrayList<String> data;
+
     private Activity activity;
 
 
     public Logger(Activity activity){
 
         this.activity = activity;
+        data = new ArrayList<>();
+
         file_name = "gnss_log_" + getCurrentTime() + ".csv";
         base_dir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
         file_path = base_dir + File.separator +  file_name;
@@ -109,6 +115,18 @@ public class Logger {
     }
 
 
+    public void saveDataToFile(){
+        Log.d("LOG", "saving data to file");
+    }
+
+
+    public void deleteData(){
+        Log.d("LOG", "deleting data");
+    }
+
+    public void resetData(){
+        data.clear();
+    }
 
 
 

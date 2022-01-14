@@ -1,7 +1,9 @@
 package com.ai2s_lab.gnss_dr.ui.log;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -90,6 +93,9 @@ public class LogFragment extends Fragment {
     private LogListAdapter logListAdapter;
 
 
+    // alert dialog
+    private AlertDialog.Builder builder;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // init view and inflate
@@ -142,6 +148,28 @@ public class LogFragment extends Fragment {
         listView = binding.listLog;
         listView.setAdapter(logListAdapter);
 
+
+        // create an Alert dialog
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Save Data");
+        builder.setMessage("Are you sure you want to write the log date to a CSV file?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Save File", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                logger.saveDataToFile();
+            }
+        });
+
+        builder.setNegativeButton("Stop Logging", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                logger.deleteData();
+                dialogInterface.cancel();
+            }
+        });
+
         // action handlers for logging buttons
         //save button
         btn_save.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +182,9 @@ public class LogFragment extends Fragment {
                 btn_reset.setEnabled(false);
                 isLogging = false;
                 tv_subtitle.setText("No Logfile Created!");
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
 
@@ -163,7 +194,6 @@ public class LogFragment extends Fragment {
                 public void onClick(View view) {
 
                     Snackbar.make(getActivity().findViewById(android.R.id.content), "User has started logging!", Snackbar.LENGTH_SHORT).show();
-                    Log.d(LOG, "User has started logging!");
 
                     if(switch_gnss.isChecked()){
                         logger = new Logger(getActivity());
@@ -194,28 +224,8 @@ public class LogFragment extends Fragment {
         switch_gnss.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    if(Settings.getGpsChoice() == 2)
-                        gnss_retriever.requestData();
-                    else if(Settings.getGpsChoice() == 1)
-                        fused_retriever.requestData();
-
-                    switch_gnss.setText("GPS On");
-                    Settings.toggleGPS();
-                    tv_update_freq.setText("Update Every " + Settings.getUpdateFrequency() + "ms");
-
-                } else {
-                    if(Settings.getGpsChoice() == 2)
-                        gnss_retriever.stopGettingData();
-                    else if(Settings.getGpsChoice() == 1)
-                        fused_retriever.stopGettingData();
-
-                    switch_gnss.setText("GPS OFF");
-                    resetList();
-                    resetUI();
-                    Settings.toggleGPS();
-                    tv_update_freq.setText("GPS is turned off");
-                }
+                Settings.toggleGPS();
+                applyCurrentSettings();
             }
         });
 
@@ -326,6 +336,7 @@ public class LogFragment extends Fragment {
 
         if(gpsUsed){
             gnss_retriever.requestData();
+            fused_retriever.stopGettingData();
         } else {
             gnss_retriever.stopGettingData();
         }
@@ -334,11 +345,12 @@ public class LogFragment extends Fragment {
     private void applyFused(boolean gpsUsed){
         tv_log_title.setText("Using FusedLocationProvider");
         log_sats.setVisibility(View.INVISIBLE);
+//        log_btns.setVisibility(View.INVISIBLE);
         tv_num_sat.setText("N/A");
 
         if(gpsUsed){
             fused_retriever.requestData();
-
+            gnss_retriever.stopGettingData();
         } else {
             fused_retriever.stopGettingData();
         }
