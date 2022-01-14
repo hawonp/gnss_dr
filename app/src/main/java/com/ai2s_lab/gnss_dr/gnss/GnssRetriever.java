@@ -190,9 +190,6 @@ public class GnssRetriever {
         my_location_manager.removeUpdates(my_location_listener);
         my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
         my_location_manager.removeNmeaListener(my_nmealistener);
-//        if (true) {
-//            fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
-//        }
     }
 
     private String getConstellationName(int type_no) {
