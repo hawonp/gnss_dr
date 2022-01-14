@@ -98,7 +98,7 @@ public class GnssRetriever {
 
             if(logFragment.isLogging){
                 String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing)};
-                logFragment.getLogger().writeALine(temp);
+                logFragment.getLogger().addData(temp);
             }
 
             Log.d(TAG, "lat: " + latitude
@@ -130,10 +130,10 @@ public class GnssRetriever {
 
             //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
-            if(logFragment.isLogging){
-                String [] temp = {"", "", "", "", Integer.toString(satCount) , ""};
-                logFragment.getLogger().writeALine(temp);
-            }
+//            if(logFragment.isLogging){
+//                String [] temp = {"", "", "", "", Integer.toString(satCount) , ""};
+//                logFragment.getLogger().addData(temp);
+//            }
 
 
             ArrayList<Satellite> satellites = new ArrayList<>();
@@ -147,26 +147,29 @@ public class GnssRetriever {
                 double sat_azim_degree = status.getAzimuthDegrees(i);
                 double sat_car_t_noise_r = status.getCn0DbHz(i);
 
-                Log.d(TAG, " satellite ID: " + sat_vid
-                        + "  constellation type: " + sat_constellation_name
-                        + " satellite used: " + sat_is_used
-                        + " elevation: " + sat_elevation
-                        + " azimuth: " + sat_azim_degree
-                        + " carrier2noiseR: " + sat_car_t_noise_r);
+                if(sat_is_used){
+                    Log.d(TAG, " satellite ID: " + sat_vid
+                            + "  constellation type: " + sat_constellation_name
+                            + " satellite used: " + sat_is_used
+                            + " elevation: " + sat_elevation
+                            + " azimuth: " + sat_azim_degree
+                            + " carrier2noiseR: " + sat_car_t_noise_r);
 
-                Satellite satellite = new Satellite(sat_vid, sat_constellation_name, sat_is_used, sat_elevation, sat_azim_degree, sat_car_t_noise_r);
-                satellites.add(satellite);
+                    Satellite satellite = new Satellite(sat_vid, sat_constellation_name, sat_is_used, sat_elevation, sat_azim_degree, sat_car_t_noise_r);
+                    satellites.add(satellite);
 
-                if(logFragment.isLogging){
-                    String relativeNum = i+1 + "/" + satCount;
-                    String [] temp = {"", "", "", "", relativeNum, "", Integer.toString(sat_vid), sat_constellation_name, Boolean.toString(sat_is_used), Double.toString(sat_elevation), Double.toString(sat_azim_degree), Double.toString(sat_car_t_noise_r)};
-                    logFragment.getLogger().writeALine(temp);
+                    if(logFragment.isLogging){
+                        String [] temp = {"", "", "", "", "", "", Integer.toString(sat_vid), sat_constellation_name, Boolean.toString(sat_is_used), Double.toString(sat_elevation), Double.toString(sat_azim_degree), Double.toString(sat_car_t_noise_r)};
+                        logFragment.getLogger().addData(temp);
+                    }
                 }
+
+
             }
 
             if(logFragment.isVisible()){
                 logFragment.updateList(satellites);
-                logFragment.updateSatNum(satCount);
+                logFragment.updateSatNum(satellites.size());
             }
 
         }

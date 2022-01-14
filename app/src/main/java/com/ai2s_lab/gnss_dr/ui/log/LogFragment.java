@@ -137,7 +137,7 @@ public class LogFragment extends Fragment {
         btn_save.setEnabled(false);
         btn_reset.setEnabled(false);
         switch_gnss.setChecked(false);
-        tv_subtitle.setText("No Logfile Created!");
+        tv_subtitle.setText("Not Logging");
 
         // apply current settings
         applyCurrentSettings();
@@ -165,7 +165,7 @@ public class LogFragment extends Fragment {
         builder.setNegativeButton("Stop Logging", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                logger.deleteData();
+                logger.resetData();
                 dialogInterface.cancel();
             }
         });
@@ -175,13 +175,12 @@ public class LogFragment extends Fragment {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(getActivity().findViewById(android.R.id.content), "User has stopped logging!", Snackbar.LENGTH_SHORT).show();
-                Log.d(LOG, "User has stopped logging!");
+//                Snackbar.make(getActivity().findViewById(android.R.id.content), "You have stopped logging!", Snackbar.LENGTH_SHORT).show();
                 btn_start.setEnabled(true);
                 btn_save.setEnabled(false);
                 btn_reset.setEnabled(false);
                 isLogging = false;
-                tv_subtitle.setText("No Logfile Created!");
+                tv_subtitle.setText("Not Logging");
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
@@ -193,12 +192,12 @@ public class LogFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "User has started logging!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "You have started logging!", Snackbar.LENGTH_SHORT).show();
 
                     if(switch_gnss.isChecked()){
                         logger = new Logger(getActivity());
 
-                        tv_subtitle.setText("Logging on \'" + logger.getFileName() + "\'");
+                        tv_subtitle.setText("Started Logging GPS Data");
                         btn_start.setEnabled(false);
                         btn_save.setEnabled(true);
                         btn_reset.setEnabled(true);
@@ -214,9 +213,8 @@ public class LogFragment extends Fragment {
         btn_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(getActivity().findViewById(android.R.id.content), "User has reset the log!", Snackbar.LENGTH_SHORT).show();
-                Log.d(LOG, "User has reset logging!");
-                logger.resetFile();
+                Snackbar.make(getActivity().findViewById(android.R.id.content), "You have reset the logged data", Snackbar.LENGTH_SHORT).show();
+                logger.resetData();
             }
         });
 
@@ -266,7 +264,7 @@ public class LogFragment extends Fragment {
             tv_horizontal_accuracy.setText("N/A");
 
         if(vertical_accuracy != -1)
-            tv_vertical_accuracy.setText(one_point.format(vertical_accuracy) + "%");
+            tv_vertical_accuracy.setText(one_point.format(vertical_accuracy) + " m");
         else
             tv_vertical_accuracy.setText("N/A");
 
@@ -342,7 +340,7 @@ public class LogFragment extends Fragment {
     private void applyFused(boolean gpsUsed){
         tv_log_title.setText("Using FusedLocationProvider");
         log_sats.setVisibility(View.INVISIBLE);
-//        log_btns.setVisibility(View.INVISIBLE);
+        log_btns.setVisibility(View.INVISIBLE);
         tv_num_sat.setText("N/A");
 
         if(gpsUsed){

@@ -40,38 +40,13 @@ public class Logger {
     private CSVWriter csv_writer;
     private String [] first_line;
 
-//    private Context context;
-
-    private ArrayList<String> data;
-
+    private ArrayList<String []> data;
     private Activity activity;
-
 
     public Logger(Activity activity){
 
         this.activity = activity;
         data = new ArrayList<>();
-
-        file_name = "gnss_log_" + getCurrentTime() + ".csv";
-        base_dir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
-        file_path = base_dir + File.separator +  file_name;
-
-        file = new File(file_path);
-
-        first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
-
-        writeALine(first_line);
-
-        Log.d(TAG, file_name + " created");
-        Snackbar.make(activity.findViewById(android.R.id.content), file_name + " created", Snackbar.LENGTH_SHORT).show();
-
-    }
-
-    public String getFileName() { return file_name; }
-
-    // TODO Once GNSS data is known
-    public void logData(String input){
-        Log.d(TAG, input);
     }
 
     private String getCurrentTime(){
@@ -80,22 +55,15 @@ public class Logger {
         return current_date + "_" + current_time ;
     }
 
-    public void resetFile(){
-        try {
-            file.createNewFile();
-            csv_writer = new CSVWriter(new FileWriter(file_path));
+    public void saveDataToFile(){
+        file_name = "gnss_log_" + getCurrentTime() + ".csv";
+        base_dir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+        file_path = base_dir + File.separator +  file_name;
 
-            csv_writer.writeNext(first_line);
-            csv_writer.close();
+        file = new File(file_path);
 
-        } catch (IOException e){
-            Snackbar.make(activity.findViewById(android.R.id.content), "Could not reset log file", Snackbar.LENGTH_SHORT).show();
+        first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
-        }
-
-    }
-
-    public void writeALine(String [] text) {
         try {
             if (file.exists() && !file.isDirectory()) {
                 file_writer = new FileWriter(file_path, true);
@@ -105,29 +73,29 @@ public class Logger {
                 csv_writer = new CSVWriter(new FileWriter(file_path));
             }
 
-            csv_writer.writeNext(text);
+            csv_writer.writeNext(first_line);
+
+            for(String [] line : data){
+                csv_writer.writeNext(line);
+            }
+
             csv_writer.close();
 
         } catch (IOException e) {
             Snackbar.make(activity.findViewById(android.R.id.content), "Could not create a log file!", Snackbar.LENGTH_SHORT).show();
 
         }
-    }
+        Snackbar.make(activity.findViewById(android.R.id.content), file_name + " created", Snackbar.LENGTH_SHORT).show();
 
-
-    public void saveDataToFile(){
-        Log.d("LOG", "saving data to file");
-    }
-
-
-    public void deleteData(){
-        Log.d("LOG", "deleting data");
     }
 
     public void resetData(){
         data.clear();
     }
 
+    public void addData(String [] line){
+        data.add(line);
+    }
 
 
 
