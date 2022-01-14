@@ -49,127 +49,195 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_log_file">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:textAlignment="center">
+            android:orientation="vertical">
 
-            <TableRow
+            <TextView
+                android:id="@+id/tv_update_frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Every 100ms" />
+
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+                android:gravity="center"
+                android:textAlignment="center">
 
-                <TextView
-                    android:id="@+id/text_log_lat_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/lat"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/text_log_lat_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A" />
+                    <TextView
+                        android:id="@+id/text_log_lat_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/lat"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/text_log_long_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Long:"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/text_log_lat_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
 
-                <TextView
-                    android:id="@+id/text_log_long_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A" />
-            </TableRow>
+                    <TextView
+                        android:id="@+id/text_log_long_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Long:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+                    <TextView
+                        android:id="@+id/text_log_long_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
+                </TableRow>
 
-                <TextView
-                    android:id="@+id/text_log_speed_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="@string/speed"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/text_log_speed_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A" />
+                    <TextView
+                        android:id="@+id/text_log_speed_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="@string/speed"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/text_log_height_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Height:"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/text_log_speed_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
 
-                <TextView
-                    android:id="@+id/text_log_height_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A"
-                    tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
-            </TableRow>
+                    <TextView
+                        android:id="@+id/text_log_height_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Height:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal">
+                    <TextView
+                        android:id="@+id/text_log_height_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A"
+                        tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+                </TableRow>
 
-                <TextView
-                    android:id="@+id/text_log_num_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="# Sats:"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal">
 
-                <TextView
-                    android:id="@+id/text_log_num_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A" />
+                    <TextView
+                        android:id="@+id/text_log_num_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="# Sats:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/text_log_bearing_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:text="Bearing:"
-                    android:textAlignment="textEnd"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/text_log_num_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
 
-                <TextView
-                    android:id="@+id/text_log_bearing_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="N/A"
-                    tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+                    <TextView
+                        android:id="@+id/text_log_bearing_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Bearing:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
 
-            </TableRow>
+                    <TextView
+                        android:id="@+id/text_log_bearing_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A"
+                        tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
 
-        </TableLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/text_log_x_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="Accur:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_log_x_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
+
+                    <TextView
+                        android:id="@+id/text_log_y_accur"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Height-Accur:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_log_y_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A"
+                        tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+
+                    <TextView
+                        android:id="@+id/text_log_speed_accuracy_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="Speed-Accur:"
+                        android:textAlignment="textEnd"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_log_speed_accuracy_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="N/A" />
+
+                </TableRow>
+
+            </TableLayout>
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -289,11 +357,11 @@
             android:text="Start" />
 
         <Button
-            android:id="@+id/btn_log_stop"
+            android:id="@+id/btn_log_save"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="stop" />
+            android:text="save" />
 
     </LinearLayout>
 

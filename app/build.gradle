@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.ai2s_lab.gnss_dr"
-        minSdk 24
+        minSdk 29
         targetSdk 30
         versionCode 1
         versionName "1.0"

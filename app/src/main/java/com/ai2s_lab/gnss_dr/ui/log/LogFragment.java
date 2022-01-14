@@ -42,6 +42,7 @@ import org.w3c.dom.Text;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class LogFragment extends Fragment {
@@ -66,12 +67,22 @@ public class LogFragment extends Fragment {
     private TextView tv_height;
     private TextView tv_num_sat;
     private TextView tv_bearing;
+    private TextView tv_horizontal_accuracy;
+    private TextView tv_vertical_accuracy;
+    private TextView tv_speed_accuracy;
 
     private Button btn_start;
     private Button btn_reset;
-    private Button btn_stop;
+    private Button btn_save;
     private Switch switch_gnss;
     private Logger logger;
+
+    private CardView log_info;
+    private CardView log_sats;
+    private LinearLayout log_btns;
+    private TextView tv_placeholder;
+
+    private TextView tv_update_freq;
 
     // UI elements + data for listview
     private ListView listView;
@@ -96,7 +107,7 @@ public class LogFragment extends Fragment {
 
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
-        btn_stop = binding.btnLogStop;
+        btn_save = binding.btnLogSave;
         switch_gnss = binding.switchLogTrack;
 
         tv_lat = binding.textLogLatValue;
@@ -105,41 +116,25 @@ public class LogFragment extends Fragment {
         tv_height = binding.textLogHeightValue;
         tv_num_sat = binding.textLogNumValue;
         tv_bearing = binding.textLogBearingValue;
+        tv_horizontal_accuracy = binding.textLogXValue;
+        tv_vertical_accuracy = binding.textLogYValue;
+        tv_speed_accuracy = binding.textLogSpeedAccuracyValue;
 
-        // set default values
-        tv_subtitle.setText("No Logfile Created!");
+        log_info =  binding.logInfo;
+        log_sats = binding.logSats;
+        log_btns = binding.logButtonLayout;
+        tv_placeholder = binding.tvPlaceholder;
 
-        if(Settings.getGpsChoice() == 1) {
-            tv_log_title.setText("Using FusedLocationProvider");
-            switch_gnss.setClickable(true);
-            visibleUI();
-        }
-        else if(Settings.getGpsChoice() == 2){
-            switch_gnss.setClickable(true);
-            tv_log_title.setText("Using GNSS");
-            visibleUI();
-        }
-        else{
-            invisibleUI();
-        }
+        tv_update_freq = binding.tvUpdateFrequency;
 
-        // states for logging buttons
-        btn_stop.setEnabled(false);
+        // initial states for logging buttons
+        btn_save.setEnabled(false);
         btn_reset.setEnabled(false);
         switch_gnss.setChecked(false);
+        tv_subtitle.setText("No Logfile Created!");
 
-        // initialize switch
-        if(Settings.getGPS()){
-            switch_gnss.setChecked(true);
-            switch_gnss.setText("GPS On");
-            gnss_retriever.requestData();
-        } else{
-            gnss_retriever.stopGettingData();
-            switch_gnss.setText("GPS OFF");
-            switch_gnss.setChecked(false);
-            resetList();
-            resetUI();
-        }
+        // apply current settings
+        applyCurrentSettings();
 
         // adapter for listview
         this.satellites = new ArrayList<>();
@@ -148,19 +143,17 @@ public class LogFragment extends Fragment {
         listView.setAdapter(logListAdapter);
 
         // action handlers for logging buttons
-        //Stop button
-        btn_stop.setOnClickListener(new View.OnClickListener() {
+        //save button
+        btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), "User has stopped logging!", Snackbar.LENGTH_SHORT).show();
                 Log.d(LOG, "User has stopped logging!");
-
                 btn_start.setEnabled(true);
-                btn_stop.setEnabled(false);
+                btn_save.setEnabled(false);
                 btn_reset.setEnabled(false);
                 isLogging = false;
                 tv_subtitle.setText("No Logfile Created!");
-
             }
         });
 
@@ -177,14 +170,12 @@ public class LogFragment extends Fragment {
 
                         tv_subtitle.setText("Logging on \'" + logger.getFileName() + "\'");
                         btn_start.setEnabled(false);
-                        btn_stop.setEnabled(true);
+                        btn_save.setEnabled(true);
                         btn_reset.setEnabled(true);
                         isLogging = true;
                     } else {
                         Snackbar.make(getActivity().findViewById(android.R.id.content), "GNSS Is Off", Snackbar.LENGTH_SHORT).show();
-
                     }
-
 
                 }
             });
@@ -199,7 +190,7 @@ public class LogFragment extends Fragment {
             }
         });
 
-        //Log switch
+        //Log switch listener
         switch_gnss.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -211,16 +202,19 @@ public class LogFragment extends Fragment {
 
                     switch_gnss.setText("GPS On");
                     Settings.toggleGPS();
+                    tv_update_freq.setText("Update Every " + Settings.getUpdateFrequency() + "ms");
+
                 } else {
                     if(Settings.getGpsChoice() == 2)
                         gnss_retriever.stopGettingData();
                     else if(Settings.getGpsChoice() == 1)
-                        gnss_retriever.stopGettingData();
+                        fused_retriever.stopGettingData();
 
                     switch_gnss.setText("GPS OFF");
                     resetList();
                     resetUI();
                     Settings.toggleGPS();
+                    tv_update_freq.setText("GPS is turned off");
                 }
             }
         });
@@ -237,12 +231,42 @@ public class LogFragment extends Fragment {
         binding = null;
     }
 
-    public void updateChart(double lat, double lon, double alt, double bearing, double speed){
-        tv_lat.setText(Double.toString(lat));
-        tv_long.setText(Double.toString(lon));
-        tv_height.setText(Double.toString(alt));
-        tv_bearing.setText(Double.toString(bearing));
-        tv_speed.setText(Double.toString(speed));
+    public void updateChart(double lat, double lon, double alt, double bearing, double speed, double horizontal_accuracy, double vertical_accuracy, double speed_accuracy){
+        DecimalFormat five_points = new DecimalFormat("#.#####");
+        DecimalFormat one_point = new DecimalFormat("#.#");
+
+        tv_lat.setText(five_points.format(lat));
+        tv_long.setText(five_points.format(lon));
+
+        if(alt != -1)
+            tv_height.setText(five_points.format(alt) + " m");
+        else
+            tv_height.setText("N/A");
+
+        if(bearing != -1)
+            tv_bearing.setText(five_points.format(bearing));
+        else
+            tv_bearing.setText("N/A");
+
+        if(speed != -1 && speed_accuracy != -1)
+            tv_speed.setText(five_points.format(speed) + " m/s");
+        else
+            tv_speed.setText("N/A");
+
+        if(horizontal_accuracy != -1)
+            tv_horizontal_accuracy.setText(one_point.format(horizontal_accuracy) + "%");
+        else
+            tv_horizontal_accuracy.setText("N/A");
+
+        if(vertical_accuracy != -1)
+            tv_vertical_accuracy.setText(one_point.format(vertical_accuracy) + "%");
+        else
+            tv_vertical_accuracy.setText("N/A");
+
+        if(speed_accuracy != -1)
+            tv_speed_accuracy.setText(one_point.format(speed_accuracy) + "%");
+        else
+            tv_speed_accuracy.setText("N/A");
     }
 
     public void updateSatNum(int satNum){
@@ -258,51 +282,100 @@ public class LogFragment extends Fragment {
 
     public Logger getLogger() { return this.logger; }
 
-    public void resetList(){
+    private void resetList(){
         this.satellites = new ArrayList<>();
         logListAdapter = new LogListAdapter(getActivity(), satellites);
         listView = binding.listLog;
         listView.setAdapter(logListAdapter);
     }
 
-    public void resetUI(){
+    private void resetUI(){
         tv_lat.setText("N/A");
         tv_long.setText("N/A");
         tv_speed.setText("N/A");
         tv_height.setText("N/A");
         tv_num_sat.setText("N/A");
         tv_bearing.setText("N/A");
+        tv_horizontal_accuracy.setText("N/A");
+        tv_vertical_accuracy.setText("N/A");
+        tv_speed_accuracy.setText("N/A");
     }
 
-    public void invisibleUI(){
+    private void invisibleUI(){
         tv_log_title.setVisibility(View.INVISIBLE);
         tv_subtitle.setVisibility(View.INVISIBLE);
         switch_gnss.setVisibility(View.INVISIBLE);
-        CardView log_info =  binding.logInfo;
         log_info.setVisibility(View.INVISIBLE);
-        CardView log_sats = binding.logSats;
         log_sats.setVisibility(View.INVISIBLE);
-
-        LinearLayout log_btns = binding.logButtonLayout;
         log_btns.setVisibility(View.INVISIBLE);
-
-        TextView tv_placeholder = binding.tvPlaceholder;
         tv_placeholder.setText("Please select a GPS provider first!");
     }
 
-    public void visibleUI(){
+    private void visibleUI(){
         tv_log_title.setVisibility(View.VISIBLE);
         tv_subtitle.setVisibility(View.VISIBLE);
         switch_gnss.setVisibility(View.VISIBLE);
-        CardView log_info =  binding.logInfo;
         log_info.setVisibility(View.VISIBLE);
-        CardView log_sats = binding.logSats;
         log_sats.setVisibility(View.VISIBLE);
-
-        LinearLayout log_btns = binding.logButtonLayout;
         log_btns.setVisibility(View.VISIBLE);
-
-        TextView tv_placeholder = binding.tvPlaceholder;
         tv_placeholder.setVisibility(View.INVISIBLE);
     }
+
+    private void applyGNSS(boolean gpsUsed){
+        tv_log_title.setText("Using GNSS");
+
+        if(gpsUsed){
+            gnss_retriever.requestData();
+        } else {
+            gnss_retriever.stopGettingData();
+        }
+    }
+
+    private void applyFused(boolean gpsUsed){
+        tv_log_title.setText("Using FusedLocationProvider");
+        log_sats.setVisibility(View.INVISIBLE);
+        tv_num_sat.setText("N/A");
+
+        if(gpsUsed){
+            fused_retriever.requestData();
+
+        } else {
+            fused_retriever.stopGettingData();
+        }
+
+    }
+
+    private void applyCurrentSettings(){
+        // FusedLocationProvider
+        if(Settings.getGpsChoice() == 1){
+            visibleUI();
+            applyFused(Settings.getGPS());
+        }
+        // GNSS Provider
+        else if(Settings.getGpsChoice() == 2){
+            visibleUI();
+            applyGNSS(Settings.getGPS());
+        }
+        // No Provider Selected
+        else {
+            invisibleUI();
+        }
+
+        // GPS On
+        if(Settings.getGPS()){
+            tv_update_freq.setText("Update Every " + Settings.getUpdateFrequency() + "ms");
+            switch_gnss.setText("GPS On");
+            switch_gnss.setChecked(true);
+        }
+        // GPS Off
+        else{
+            tv_update_freq.setText("GPS is turned off");
+            switch_gnss.setText("GPS Off");
+            switch_gnss.setChecked(false);
+
+            resetList();
+            resetUI();
+        }
+    }
+
 }

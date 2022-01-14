@@ -2,12 +2,16 @@ package com.ai2s_lab.gnss_dr.gnss;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.os.Build;
 import android.os.Looper;
+import android.util.Log;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
+import com.ai2s_lab.gnss_dr.util.Settings;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -29,7 +33,7 @@ public class FusedRetriever {
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private static final int DEFAULT_INTERVAL = 5000;
+    private static final int DEFAULT_INTERVAL = Settings.getUpdateFrequency();
     private static final int POWER_INTERVAL = 0;
 
     private LogFragment logFragment;
@@ -66,36 +70,40 @@ public class FusedRetriever {
 //        updateGPS();
     }
 
-
     private void updateUI(Location location){
-        DecimalFormat five_points = new DecimalFormat("#.#####");
-        DecimalFormat one_point = new DecimalFormat("#.#");
-
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        double altitude = location.getAltitude();
-        double horizontal_accuracy = location.getAccuracy();
-        double bearing = location.getBearing();
-        double speed = location.getSpeed();
+
+        double altitude = -1;
+        double bearing = -1;
+        double speed = -1;
+        double horizontal_accuracy = -1;
+        double vertical_accuracy = -1;
+        double speed_accuracy = -1;
+
+        if(location.hasAltitude())
+            altitude = location.getAltitude();
+
+        if(location.hasBearing())
+            bearing = location.getBearing();
+
+        if(location.hasSpeed())
+            speed = location.getSpeed();
+
+        if(location.hasAccuracy())
+            horizontal_accuracy = location.getAccuracy();
+
+        if(location.hasVerticalAccuracy())
+            vertical_accuracy = location.getVerticalAccuracyMeters();
+
+        if(location.hasSpeedAccuracy())
+            speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
 
         if(logFragment.isVisible()){
-            logFragment.updateChart(latitude, longitude, altitude, bearing, speed);
+            logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
         }
+        Log.d("FUSED", String.valueOf(location.getElapsedRealtimeNanos()));
 
     }
-
-//    @SuppressLint("MissingPermission")
-//    private void updateGPS(){
-//        //user granted permission
-//        fusedLocationProviderClient.getLastLocation().addOnSuccessListener((Executor) this, new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                //update from locations
-//                updateUI(location);
-//                lastKnownLocation = location;
-//            }
-//        });
-//
-//    }
 
 }

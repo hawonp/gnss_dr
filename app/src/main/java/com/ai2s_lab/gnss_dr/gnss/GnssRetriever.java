@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.ai2s_lab.gnss_dr.util.Settings;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 import androidx.annotation.NonNull;
@@ -32,7 +33,7 @@ public class GnssRetriever {
     private LogFragment logFragment;
 
     //Initial frequency for logging GNSS signals
-    private int log_frequency = 100;
+    private int log_frequency = Settings.getUpdateFrequency();
 
     public GnssRetriever(Context context, LogFragment logFragment) {
         this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -46,18 +47,41 @@ public class GnssRetriever {
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
-            double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            double altitude = location.getAltitude();
-            double horizontal_accuracy = location.getAccuracy();
-            double bearing = location.getBearing();
-            double speed = location.getSpeed();
+            double longitude = location.getLongitude();
+
+            double altitude = -1;
+            double bearing = -1;
+            double speed = -1;
+            double horizontal_accuracy = -1;
+            double vertical_accuracy = -1;
+            double speed_accuracy = -1;
+
+
+            if(location.hasAltitude())
+                altitude = location.getAltitude();
+
+            if(location.hasBearing())
+                bearing = location.getBearing();
+
+            if(location.hasSpeed())
+                speed = location.getSpeed();
+
+            if(location.hasAccuracy())
+                horizontal_accuracy = location.getAccuracy();
+
+            if(location.hasVerticalAccuracy())
+                vertical_accuracy = location.getVerticalAccuracyMeters();
+
+            if(location.hasSpeedAccuracy())
+                speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
+
+            if(logFragment.isVisible()){
+                logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
+            }
 
             String provider = location.getProvider();
 
-            if(logFragment.isVisible()){
-                logFragment.updateChart(latitude, longitude, altitude, bearing, speed);
-            }
 //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
             if(logFragment.isLogging){
