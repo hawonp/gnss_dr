@@ -231,9 +231,6 @@ public class LogFragment extends Fragment {
 
         return root;
     }
-//    public void updateUIComponents() {
-//        tv_lat.setText();
-//    }
 
     @Override
     public void onDestroyView() {
