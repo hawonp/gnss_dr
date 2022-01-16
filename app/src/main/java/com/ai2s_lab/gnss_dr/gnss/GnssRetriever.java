@@ -25,6 +25,9 @@ import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import android.location.OnNmeaMessageListener;
 
@@ -148,9 +151,9 @@ public class GnssRetriever {
                 String sat_constellation_name = getConstellationName(sat_type);
                 int sat_vid = status.getSvid(i);
                 boolean sat_is_used = status.usedInFix(i);
-                double sat_elevation = status.getElevationDegrees(i);
-                double sat_azim_degree = status.getAzimuthDegrees(i);
-                double sat_car_t_noise_r = status.getCn0DbHz(i);
+                double sat_elevation = round(status.getElevationDegrees(i), 5);
+                double sat_azim_degree = round(status.getAzimuthDegrees(i), 5);
+                double sat_car_t_noise_r = round(status.getCn0DbHz(i), 5);
 
                 if(sat_is_used){
                     Log.d(TAG, " satellite ID: " + sat_vid
@@ -229,6 +232,14 @@ public class GnssRetriever {
     //log_frequency
     public void setLogFrequency(int log_freq) {
         log_frequency = log_freq;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 }

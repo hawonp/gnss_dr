@@ -383,6 +383,7 @@ public class LogFragment extends Fragment   {
         btn_save.setEnabled(false);
         btn_start.setEnabled(false);
         tv_num_sat.setText("N/A");
+        tv_subtitle.setText("Can't Log With FusedLocationProvider!");
 
         if(gpsUsed){
             fused_retriever.requestData();
