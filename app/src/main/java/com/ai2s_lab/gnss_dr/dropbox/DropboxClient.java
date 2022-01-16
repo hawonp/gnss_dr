@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 public class DropboxClient {
 
-    private static final String ACCESS_TOKEN = "sl.BAMH9INykGOWJaYiipnScFlIw0RTmxp5Oi_kCYfdmq8KRLN00PpR77831YW0z9oSaHGETaMWXW_iKiI-wdoFUUhLrot9tdVaLD-Iqo5IZWm1ricmKVnwOxIUApV7_DLUJa6Z0PLIXRhE";
+    private static final String ACCESS_TOKEN = "sl.BAMRMWxMUDRWN-I1nSdm7rkCOt4Jatm-pFXeGmC4r1O7b41XWjbCMzrKAV_cvb7tF6F4Clege75KmSxbpygEvGFToWcdNZje_YzXHA1WTMsho_zkoQDjZBP1sGSEmULr3iq83XLL7xjb";
 
     private DbxRequestConfig dbxRequestConfig;
     private DbxClientV2 dbxClientV2;
