@@ -42,7 +42,6 @@ public class GnssRetriever {
         this.logFragment = logFragment;
     }
 
-
     //Listener for Nmea
     private final OnNmeaMessageListener my_nmealistener = new OnNmeaMessageListener() {
         private static final String TAG = "NMEAListener";

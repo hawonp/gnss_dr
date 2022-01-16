@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_log" />
 
     <fragment
-        android:id="@+id/navigation_map"
-        android:name="com.ai2s_lab.gnss_dr.ui.map.MapFragment"
-        android:label="@string/map"
-        tools:layout="@layout/fragment_map" />
-
-    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.ai2s_lab.gnss_dr.ui.settings.SettingsFragment"
         android:label="@string/settings"

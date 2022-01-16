@@ -1,10 +1,12 @@
 package com.ai2s_lab.gnss_dr.gnss;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.location.Location;
 import android.os.Build;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
@@ -17,7 +19,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.text.DecimalFormat;
 import java.util.concurrent.Executor;
 
-public class FusedRetriever {
+public class FusedRetriever2 {
 
     // constants
     private LocationCallback locationCallback;
@@ -37,12 +38,11 @@ public class FusedRetriever {
     private static final int DEFAULT_INTERVAL = Settings.getUpdateFrequency();
     private static final int POWER_INTERVAL = 0;
 
-    private LogFragment logFragment;
+    private Context context;
+    public FusedRetriever2(Context context ){
+        this.context = context;
 
-    public FusedRetriever(LogFragment logFragment){
-        this.logFragment = logFragment;
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(logFragment.getContext());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
 
         // init location request
         locationRequest = LocationRequest.create()
@@ -68,6 +68,7 @@ public class FusedRetriever {
     public void requestData(){
 //        LocationServices.getFusedLocationProviderClient(logFragment.getContext());
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+//        updateGPS();
     }
 
     private void updateUI(Location location){
@@ -99,15 +100,13 @@ public class FusedRetriever {
         if(location.hasSpeedAccuracy())
             speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
 
-        if(logFragment.isVisible()){
-            logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
-        }
+//        if(logFragment.isVisible()){
+//            logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
+//        }
+
+//        TextView tv_lat =
+        Log.d("FUSED2", String.valueOf(longitude));
 //        Log.d("FUSED", String.valueOf(location.getElapsedRealtimeNanos()));
-        Settings.setLatitude(latitude);
-        Settings.setLongtitude(longitude);
-        if(logFragment.getMapShown()){
-            logFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), logFragment.getZoom()));
-        }
 
     }
 

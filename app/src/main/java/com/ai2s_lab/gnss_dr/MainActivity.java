@@ -7,12 +7,15 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 
+import com.ai2s_lab.gnss_dr.gnss.GPSService;
 import com.ai2s_lab.gnss_dr.util.PermissionSupport;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -20,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PermissionSupport permissionSupport;
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_log, R.id.navigation_map, R.id.navigation_settings)
+                R.id.navigation_log, R.id.navigation_settings)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_bottom_nav);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
@@ -89,6 +94,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void startService(View v) {
+
+        Intent serviceIntent = new Intent(this, GPSService.class);
+        serviceIntent.putExtra("inputExtra", "Service is starting");
+
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    public void stopService(View v) {
+        Intent serviceIntent = new Intent(this, GPSService.class);
+        stopService(serviceIntent);
+    }
 
 
 

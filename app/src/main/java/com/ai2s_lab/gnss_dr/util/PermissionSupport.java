@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -39,6 +40,7 @@ public class PermissionSupport {
         permission_list = new ArrayList<>();
 
         for(String pm : permissions){
+            Log.i("PERMISSION", pm);
             if(ActivityCompat.checkSelfPermission(context, pm) != PackageManager.PERMISSION_GRANTED)
                 permission_list.add(pm);
         }

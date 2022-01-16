@@ -1,9 +1,11 @@
 package com.ai2s_lab.gnss_dr.ui.log;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -33,11 +36,22 @@ import com.ai2s_lab.gnss_dr.MainActivity;
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.gnss.FusedRetriever;
+import com.ai2s_lab.gnss_dr.gnss.GPSService;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.util.LogListAdapter;
 import com.ai2s_lab.gnss_dr.util.Settings;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
@@ -48,7 +62,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class LogFragment extends Fragment {
+public class LogFragment extends Fragment   {
 
     // constants
     private LogViewModel logViewModel;
@@ -77,6 +91,7 @@ public class LogFragment extends Fragment {
     private Button btn_start;
     private Button btn_reset;
     private Button btn_save;
+    private Button btn_map;
     private Switch switch_gnss;
     private Logger logger;
 
@@ -96,6 +111,16 @@ public class LogFragment extends Fragment {
     // alert dialog
     private AlertDialog.Builder builder;
 
+    // constants for map
+    private static final float DEFAULT_ZOOM = 17;
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
+
+    private GoogleMap map;
+    private MapView mapView;
+    private BottomSheetDialog bottomSheetDialog;
+    private boolean dialogShown;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // init view and inflate
@@ -114,6 +139,7 @@ public class LogFragment extends Fragment {
         btn_reset = binding.btnLogReset;
         btn_start = binding.btnLogStart;
         btn_save = binding.btnLogSave;
+        btn_map = binding.btnMap;
         switch_gnss = binding.switchLogTrack;
 
         tv_lat = binding.textLogLatValue;
@@ -170,6 +196,25 @@ public class LogFragment extends Fragment {
             }
         });
 
+        // initialize google map
+//        SupportMapFragment mapFragment = (SupportMapFragment) getParentFragmentManager().findFragmentById(R.id.map);
+//        assert mapFragment != null;
+//        mapFragment.getMapAsync(this);
+        bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+
+        mapView = bottomSheetDialog.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+
+        try {
+            MapsInitializer.initialize(getContext());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        mapView.onResume();
+        dialogShown = false;
+
+
         // action handlers for logging buttons
         //save button
         btn_save.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +260,14 @@ public class LogFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), "You have reset the logged data", Snackbar.LENGTH_SHORT).show();
                 logger.resetData();
+            }
+        });
+
+        btn_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogShown = true;
+                showMap(savedInstanceState);
             }
         });
 
@@ -340,7 +393,7 @@ public class LogFragment extends Fragment {
     private void applyFused(boolean gpsUsed){
         tv_log_title.setText("Using FusedLocationProvider");
         log_sats.setVisibility(View.INVISIBLE);
-        log_btns.setVisibility(View.INVISIBLE);
+//        log_btns.setVisibility(View.INVISIBLE);
         tv_num_sat.setText("N/A");
 
         if(gpsUsed){
@@ -385,4 +438,60 @@ public class LogFragment extends Fragment {
         }
     }
 
+    private void showMap(Bundle savedInstanceState){
+        bottomSheetDialog.show();
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+                map = googleMap;
+                map.setMyLocationEnabled(true);
+
+//                // For dropping a marker at a point on the Map
+//                LatLng sydney = new LatLng(-34, 151);
+//                map.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+//
+//                // For zooming automatically to the location of the marker
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+//                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+//                LatLng start = new LatLng(Settings.getLatitude(), Settings.getLongtitude());
+//                map.addMarker(new MarkerOptions().position(start).title("GPS").snippet("Marker"));
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(start).zoom(DEFAULT_ZOOM).build();
+//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    public boolean getMapShown() { return this.dialogShown; }
+
+    public float getZoom() { return DEFAULT_ZOOM; }
+    public GoogleMap getMap() { return this.map; }
 }
