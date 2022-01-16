@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityBottomNavBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        if(Build.VERSION.SDK_INT > 9){
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

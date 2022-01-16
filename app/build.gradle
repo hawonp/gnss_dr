@@ -53,4 +53,7 @@ dependencies {
     // Google Play Services
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
+    // Dropbox
+    implementation 'com.dropbox.core:dropbox-core-sdk:5.1.1'
+
 }

@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
+import com.ai2s_lab.gnss_dr.dropbox.DropboxClient;
 import com.ai2s_lab.gnss_dr.gnss.FusedRetriever;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
@@ -106,6 +107,9 @@ public class LogFragment extends Fragment   {
     private BottomSheetDialog bottomSheetDialog;
     private boolean dialogShown;
 
+    // dropbox client
+    private DropboxClient dropboxClient;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // init view and inflate
@@ -170,6 +174,7 @@ public class LogFragment extends Fragment   {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 logger.saveDataToFile();
+                dropboxClient = new DropboxClient();
             }
         });
 

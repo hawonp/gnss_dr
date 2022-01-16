@@ -179,7 +179,10 @@ public class GnssRetriever {
             if(logFragment.isVisible()){
                 logFragment.updateList(satellites);
                 logFragment.updateSatNum(satellites.size());
-                logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
+                if(logFragment.isLogging){
+                    logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
+
+                }
             }
 
         }
