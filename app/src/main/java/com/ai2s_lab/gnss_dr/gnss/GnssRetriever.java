@@ -103,6 +103,7 @@ public class GnssRetriever {
             if(logFragment.isLogging){
                 String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing)};
                 logFragment.getLogger().addData(temp);
+                logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
             }
 
             Log.d(TAG, "lat: " + latitude
@@ -178,6 +179,7 @@ public class GnssRetriever {
             if(logFragment.isVisible()){
                 logFragment.updateList(satellites);
                 logFragment.updateSatNum(satellites.size());
+                logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
             }
 
         }

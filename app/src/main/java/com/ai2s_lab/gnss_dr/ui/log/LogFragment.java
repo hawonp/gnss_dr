@@ -483,4 +483,9 @@ public class LogFragment extends Fragment   {
 
     public float getZoom() { return DEFAULT_ZOOM; }
     public GoogleMap getMap() { return this.map; }
+
+    public void updateSubtitle(int count){
+        String temp = "Logged " + count + " lines";
+        tv_subtitle.setText(temp);
+    }
 }

@@ -97,6 +97,8 @@ public class Logger {
         data.add(line);
     }
 
+    public int getDataCount() { return this.data.size(); }
+
 
 
 
