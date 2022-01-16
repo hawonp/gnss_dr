@@ -1,32 +1,21 @@
 package com.ai2s_lab.gnss_dr;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 
-import com.ai2s_lab.gnss_dr.gnss.GPSService;
 import com.ai2s_lab.gnss_dr.util.PermissionSupport;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -93,22 +82,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "All Permissions Granted Confirmation");
         }
     }
-
-
-    public void startService(View v) {
-
-        Intent serviceIntent = new Intent(this, GPSService.class);
-        serviceIntent.putExtra("inputExtra", "Service is starting");
-
-        ContextCompat.startForegroundService(this, serviceIntent);
-    }
-
-    public void stopService(View v) {
-        Intent serviceIntent = new Intent(this, GPSService.class);
-        stopService(serviceIntent);
-    }
-
-
 
 
 }

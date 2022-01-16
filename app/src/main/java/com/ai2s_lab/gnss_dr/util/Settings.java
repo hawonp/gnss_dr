@@ -5,8 +5,7 @@ public class Settings {
     private static int gps_choice = -1;
     private static boolean gps = false;
     private static int update_frequency = 100;
-    private static double latitude;
-    private static double longtitude;
+
     public Settings(){
 
     }
@@ -34,21 +33,5 @@ public class Settings {
 
     public static void setUpdateFrequency(int choice) {
         update_frequency = choice;
-    }
-
-    public static double getLatitude() {
-        return latitude;
-    }
-
-    public static void setLatitude(double latitude) {
-        Settings.latitude = latitude;
-    }
-
-    public static double getLongtitude() {
-        return longtitude;
-    }
-
-    public static void setLongtitude(double longtitude) {
-        Settings.longtitude = longtitude;
     }
 }

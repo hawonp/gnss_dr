@@ -22,6 +22,8 @@ import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import android.location.OnNmeaMessageListener;
@@ -107,6 +109,10 @@ public class GnssRetriever {
                     + " bearing: " + bearing
                     + " speed: " + speed);
             Log.d(TAG, "provider: " + provider);
+
+            if(logFragment.getMapShown()){
+                logFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), logFragment.getZoom()));
+            }
         }
     };
 

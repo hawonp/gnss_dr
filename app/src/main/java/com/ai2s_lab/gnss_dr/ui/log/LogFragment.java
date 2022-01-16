@@ -23,42 +23,27 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
+
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.ai2s_lab.gnss_dr.MainActivity;
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.gnss.FusedRetriever;
-import com.ai2s_lab.gnss_dr.gnss.GPSService;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.util.LogListAdapter;
 import com.ai2s_lab.gnss_dr.util.Settings;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.w3c.dom.Text;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -394,6 +379,9 @@ public class LogFragment extends Fragment   {
         tv_log_title.setText("Using FusedLocationProvider");
         log_sats.setVisibility(View.INVISIBLE);
 //        log_btns.setVisibility(View.INVISIBLE);
+        btn_reset.setEnabled(false);
+        btn_save.setEnabled(false);
+        btn_start.setEnabled(false);
         tv_num_sat.setText("N/A");
 
         if(gpsUsed){
@@ -426,13 +414,14 @@ public class LogFragment extends Fragment   {
             tv_update_freq.setText("Update Every " + Settings.getUpdateFrequency() + "ms");
             switch_gnss.setText("GPS On");
             switch_gnss.setChecked(true);
+            btn_map.setEnabled(true);
         }
         // GPS Off
         else{
             tv_update_freq.setText("GPS is turned off");
             switch_gnss.setText("GPS Off");
             switch_gnss.setChecked(false);
-
+            btn_map.setEnabled(false);
             resetList();
             resetUI();
         }
@@ -447,7 +436,6 @@ public class LogFragment extends Fragment   {
             public void onMapReady(@NonNull GoogleMap googleMap) {
                 map = googleMap;
                 map.setMyLocationEnabled(true);
-
 //                // For dropping a marker at a point on the Map
 //                LatLng sydney = new LatLng(-34, 151);
 //                map.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));

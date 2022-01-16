@@ -102,9 +102,7 @@ public class FusedRetriever {
         if(logFragment.isVisible()){
             logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
         }
-//        Log.d("FUSED", String.valueOf(location.getElapsedRealtimeNanos()));
-        Settings.setLatitude(latitude);
-        Settings.setLongtitude(longitude);
+
         if(logFragment.getMapShown()){
             logFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), logFragment.getZoom()));
         }
