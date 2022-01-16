@@ -17,13 +17,13 @@ import java.io.InputStream;
 
 public class DropboxClient {
 
-    private static final String ACCESS_TOKEN = "sl.BAPkTWx0zaHelvOiyjZOI_WAHDQtH2mYrFf88oNk6iYiN5Q_3W_IH0XCJKQk2c0fuZwPlnYAwz7z06wxpjPeTust-BljdjpZT7NRa_2ksWeet_Sw6UzgkY2qnE7LSkStYQ7EwFwB";
+    private static final String ACCESS_TOKEN = "sl.BAMLpdEf27iUI3EVWhs62eMdEYF49B3vR9-cL7Vhdnu__cthgRkfgVuXAHTMfncNhTp6U7ZORcUYhdwSKW44P9xoNxBSI55C9kuCc7W71egdX7CHF0ORBWqr--dPtHgYNfkDc0jsfICt";
 
     private DbxRequestConfig dbxRequestConfig;
     private DbxClientV2 dbxClientV2;
 
     public DropboxClient(){
-        dbxRequestConfig = DbxRequestConfig.newBuilder("examples-v2-demo").build();
+        dbxRequestConfig = DbxRequestConfig.newBuilder("gnss").build();
         dbxClientV2 = new DbxClientV2(dbxRequestConfig, ACCESS_TOKEN);
 
         try {

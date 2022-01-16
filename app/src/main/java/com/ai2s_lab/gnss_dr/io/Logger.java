@@ -99,7 +99,9 @@ public class Logger {
 
     public int getDataCount() { return this.data.size(); }
 
+    public String getFileName() { return this.file_name; }
 
+    public String getFilePath() { return this.file_path; }
 
 
 }

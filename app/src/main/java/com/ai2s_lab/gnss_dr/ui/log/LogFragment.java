@@ -175,6 +175,11 @@ public class LogFragment extends Fragment   {
             public void onClick(DialogInterface dialogInterface, int i) {
                 logger.saveDataToFile();
                 dropboxClient = new DropboxClient();
+                if(dropboxClient.uploadFile(logger.getFilePath(), logger.getFileName())){
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Uploaded to Dropbox", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Upload failed", Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
 
