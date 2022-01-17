@@ -284,17 +284,6 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/log_title_cno"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="C/NO"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/log_title_elev"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -314,6 +303,17 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Azim"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/log_title_cno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="C/NO"
                     android:textStyle="bold" />
 
             </LinearLayout>
