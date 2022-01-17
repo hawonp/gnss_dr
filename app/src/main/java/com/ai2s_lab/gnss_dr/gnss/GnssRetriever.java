@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.location.OnNmeaMessageListener;
 
@@ -72,6 +73,10 @@ public class GnssRetriever {
             double horizontal_accuracy = -1;
             double vertical_accuracy = -1;
             double speed_accuracy = -1;
+            long time_milli_long = location.getTime();
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            String time_as_string = formatter.format(time_milli_long);
 
 
             if(location.hasAltitude())
@@ -101,7 +106,8 @@ public class GnssRetriever {
 //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
             if(logFragment.isLogging){
-                String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing)};
+                Log.d(TAG, "time logging: " + time_as_string);
+                String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing), time_as_string};
                 logFragment.getLogger().addData(temp);
                 logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
             }
