@@ -5,10 +5,12 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.GnssMeasurementsEvent;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -78,7 +80,7 @@ public class GnssRetriever {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String time_as_string = formatter.format(time_milli_long);
 
-
+            location.getExtras();
             if(location.hasAltitude())
                 altitude = location.getAltitude();
 
@@ -88,8 +90,9 @@ public class GnssRetriever {
             if(location.hasSpeed())
                 speed = location.getSpeed();
 
-            if(location.hasAccuracy())
+            if(location.hasAccuracy()) {
                 horizontal_accuracy = location.getAccuracy();
+            }
 
             if(location.hasVerticalAccuracy())
                 vertical_accuracy = location.getVerticalAccuracyMeters();
@@ -97,8 +100,26 @@ public class GnssRetriever {
             if(location.hasSpeedAccuracy())
                 speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
 
+            Bundle bundle = location.getExtras();
+
+            for (String key : bundle.keySet()){
+                Log.d(TAG, key + " = \"" + bundle.get(key) + "\"");
+
+            }
+            Log.d(TAG, String.valueOf(location.getProvider()));
+
+
             if(logFragment.isVisible()){
                 logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
+
+                if(location.hasAltitude() && logFragment.getSatCount() >= 4)
+                    logFragment.updateFixStatus("3D Fix");
+                else if(logFragment.getSatCount() >= 3){
+                    logFragment.updateFixStatus("2D Fix");
+                } else {
+                    logFragment.updateFixStatus("No Fix");
+                    logFragment.resetUI();
+                }
             }
 
             String provider = location.getProvider();
@@ -126,6 +147,15 @@ public class GnssRetriever {
         }
     };
 
+    private final GnssMeasurementsEvent.Callback gnss_measurement_event = new GnssMeasurementsEvent.Callback() {
+        @Override
+        public void onGnssMeasurementsReceived(GnssMeasurementsEvent eventArgs) {
+            super.onGnssMeasurementsReceived(eventArgs);
+            eventArgs.getMeasurements();
+            eventArgs.getClock();
+        }
+    };
+
     //Listener for GNSS data (satellite info)
     private final GnssStatus.Callback gnss_status_listener = new GnssStatus.Callback() {
         private static final String TAG = "GnssStatusCallback";
@@ -138,7 +168,6 @@ public class GnssRetriever {
         @Override
         public void onSatelliteStatusChanged(GnssStatus status) {
             int satCount = status.getSatelliteCount();
-
 //            tv_num_sat.setText(satCount);
 
             Log.i(TAG, "satellite count: " + satCount);
@@ -161,7 +190,6 @@ public class GnssRetriever {
                 double sat_elevation = round(status.getElevationDegrees(i), 5);
                 double sat_azim_degree = round(status.getAzimuthDegrees(i), 5);
                 double sat_car_t_noise_r = round(status.getCn0DbHz(i), 5);
-
                 if(sat_is_used){
                     Log.d(TAG, " satellite ID: " + sat_vid
                             + "  constellation type: " + sat_constellation_name

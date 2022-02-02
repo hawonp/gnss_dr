@@ -73,6 +73,7 @@ public class LogFragment extends Fragment   {
     private TextView tv_horizontal_accuracy;
     private TextView tv_vertical_accuracy;
     private TextView tv_speed_accuracy;
+    private TextView tv_fix_status;
 
     private Button btn_start;
     private Button btn_reset;
@@ -140,6 +141,7 @@ public class LogFragment extends Fragment   {
         tv_horizontal_accuracy = binding.textLogXValue;
         tv_vertical_accuracy = binding.textLogYValue;
         tv_speed_accuracy = binding.textLogSpeedAccuracyValue;
+        tv_fix_status = binding.tvFixStatus;
 
         log_info =  binding.logInfo;
         log_sats = binding.logSats;
@@ -322,8 +324,13 @@ public class LogFragment extends Fragment   {
             tv_speed_accuracy.setText("N/A");
     }
 
+    public void updateFixStatus(String status){ tv_fix_status.setText(status); }
     public void updateSatNum(int satNum){
         tv_num_sat.setText(Integer.toString(satNum));
+    }
+
+    public int getSatCount() {
+        return Integer.parseInt((String) tv_num_sat.getText());
     }
     public void updateList(ArrayList<Satellite> satellites){
 
@@ -342,7 +349,7 @@ public class LogFragment extends Fragment   {
         listView.setAdapter(logListAdapter);
     }
 
-    private void resetUI(){
+    public void resetUI(){
         tv_lat.setText("N/A");
         tv_long.setText("N/A");
         tv_speed.setText("N/A");
