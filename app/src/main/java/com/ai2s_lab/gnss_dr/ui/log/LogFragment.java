@@ -25,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,6 +34,7 @@ import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
 import com.ai2s_lab.gnss_dr.dropbox.DropboxClient;
 import com.ai2s_lab.gnss_dr.gnss.FusedRetriever;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
+import com.ai2s_lab.gnss_dr.gnss.GnssService;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.util.LogListAdapter;
@@ -111,6 +113,9 @@ public class LogFragment extends Fragment   {
     // dropbox client
     private DropboxClient dropboxClient;
 
+    // Service constant
+    private boolean serviceOn;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // init view and inflate
@@ -165,6 +170,8 @@ public class LogFragment extends Fragment   {
         listView = binding.listLog;
         listView.setAdapter(logListAdapter);
 
+        // service constants
+        serviceOn = false;
 
         // create an Alert dialog
         builder = new AlertDialog.Builder(getActivity());
@@ -433,6 +440,7 @@ public class LogFragment extends Fragment   {
             switch_gnss.setText("GPS On");
             switch_gnss.setChecked(true);
             btn_map.setEnabled(true);
+            startService();
         }
         // GPS Off
         else{
@@ -442,7 +450,24 @@ public class LogFragment extends Fragment   {
             btn_map.setEnabled(false);
             resetList();
             resetUI();
+            stopService();
+
         }
+    }
+
+    private void startService() {
+        serviceOn = true;
+        Intent serviceIntent = new Intent(getActivity(), GnssService.class);
+        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
+        ContextCompat.startForegroundService(getActivity(), serviceIntent);
+    }
+
+    private void stopService(){
+//        serviceIntent = new Intent(this.getActivity(), GnssService.class);
+//        if(serviceOn == true)
+//            stopService(serviceIntent);
+//        serviceOn = false;
+        getContext().stopService(new Intent(getActivity(), GnssService.class));
     }
 
     private void showMap(Bundle savedInstanceState){
