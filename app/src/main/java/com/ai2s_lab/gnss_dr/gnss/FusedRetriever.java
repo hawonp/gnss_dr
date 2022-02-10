@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.Executor;
 
 public class FusedRetriever {
@@ -109,8 +110,17 @@ public class FusedRetriever {
             logFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), logFragment.getZoom()));
         }
 
-        if(logFragment.isLogging){
+        long time_milli_long = location.getTime();
 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        String time_as_string = formatter.format(time_milli_long);
+
+        Log.d("FUSED", time_as_string);
+
+        if(logFragment.isLogging){
+            String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing), time_as_string};
+            logFragment.getLogger().addData(temp);
+            logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
         }
     }
 

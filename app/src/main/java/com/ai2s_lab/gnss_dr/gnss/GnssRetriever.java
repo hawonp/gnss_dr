@@ -55,19 +55,6 @@ public class GnssRetriever {
         canUpdateUI = false;
     }
 
-    //Listener for Nmea
-    private final OnNmeaMessageListener my_nmealistener = new OnNmeaMessageListener() {
-        private static final String TAG = "NMEAListener";
-
-        @Override
-        public void onNmeaMessage(String s, long l) {
-            Log.d(TAG, "Msg: " + s + " timestamp: " + l);
-        }
-    };
-
-
-
-
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
         private static final String TAG = "LocationListener";
@@ -240,14 +227,12 @@ public class GnssRetriever {
         if (isEnabled) {
             my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, log_frequency, 0.0f, my_location_listener);
             my_location_manager.registerGnssStatusCallback(gnss_status_listener, null);
-            my_location_manager.addNmeaListener(my_nmealistener, null);
         }
     }
 
     public void stopGettingData() {
         my_location_manager.removeUpdates(my_location_listener);
         my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
-        my_location_manager.removeNmeaListener(my_nmealistener);
     }
 
     private String getConstellationName(int type_no) {
