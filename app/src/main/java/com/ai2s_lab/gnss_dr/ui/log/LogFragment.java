@@ -53,7 +53,6 @@ import java.util.ArrayList;
 public class LogFragment extends Fragment   {
 
     // constants
-    private LogViewModel logViewModel;
     private FragmentLogBinding binding;
     private final String LOG = "LOG";
     public boolean isLogging;
@@ -82,12 +81,10 @@ public class LogFragment extends Fragment   {
     private Button btn_save;
     private Button btn_map;
     private Switch switch_gnss;
-    private Logger logger;
 
     private CardView log_info;
     private CardView log_sats;
     private LinearLayout log_btns;
-    private TextView tv_placeholder;
 
     private TextView tv_update_freq;
 
@@ -96,6 +93,8 @@ public class LogFragment extends Fragment   {
     private ArrayList<Satellite> satellites;
     private LogListAdapter logListAdapter;
 
+    // Logger
+    private Logger logger;
 
     // alert dialog
     private AlertDialog.Builder builder;
@@ -116,10 +115,11 @@ public class LogFragment extends Fragment   {
     // Service constant
     private boolean serviceOn;
 
+    private boolean isUsingGNSS;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         // init view and inflate
-        logViewModel = new ViewModelProvider(this).get(LogViewModel.class);
         binding = FragmentLogBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -151,7 +151,6 @@ public class LogFragment extends Fragment   {
         log_info =  binding.logInfo;
         log_sats = binding.logSats;
         log_btns = binding.logButtonLayout;
-        tv_placeholder = binding.tvPlaceholder;
 
         tv_update_freq = binding.tvUpdateFrequency;
 
@@ -160,6 +159,7 @@ public class LogFragment extends Fragment   {
         btn_reset.setEnabled(false);
         switch_gnss.setChecked(false);
         tv_subtitle.setText("Not Logging");
+        tv_log_title.setText("GPS is turned off!");
 
         // apply current settings
         applyCurrentSettings();
@@ -172,6 +172,7 @@ public class LogFragment extends Fragment   {
 
         // service constants
         serviceOn = false;
+        isUsingGNSS = true;
 
         // create an Alert dialog
         builder = new AlertDialog.Builder(getActivity());
@@ -368,71 +369,30 @@ public class LogFragment extends Fragment   {
         tv_speed_accuracy.setText("N/A");
     }
 
-    private void invisibleUI(){
-        tv_log_title.setVisibility(View.INVISIBLE);
-        tv_subtitle.setVisibility(View.INVISIBLE);
-        switch_gnss.setVisibility(View.INVISIBLE);
-        log_info.setVisibility(View.INVISIBLE);
-        log_sats.setVisibility(View.INVISIBLE);
-        log_btns.setVisibility(View.INVISIBLE);
-        tv_placeholder.setText("Please select a GPS provider first!");
-    }
-
-    private void visibleUI(){
-        tv_log_title.setVisibility(View.VISIBLE);
-        tv_subtitle.setVisibility(View.VISIBLE);
-        switch_gnss.setVisibility(View.VISIBLE);
-        log_info.setVisibility(View.VISIBLE);
-        log_sats.setVisibility(View.VISIBLE);
-        log_btns.setVisibility(View.VISIBLE);
-        tv_placeholder.setVisibility(View.INVISIBLE);
-    }
-
-    private void applyGNSS(boolean gpsUsed){
+    public void applyGNSS(){
         tv_log_title.setText("Using GNSS");
-
-        if(gpsUsed){
-            gnss_retriever.requestData();
-            fused_retriever.stopGettingData();
-        } else {
-            gnss_retriever.stopGettingData();
-        }
+        gnss_retriever.setCanUpdateUI(true);
+        fused_retriever.setCanUpdateUI(false);
+        gnss_retriever.requestData();
+        fused_retriever.stopGettingData();
+        tv_fix_status.setVisibility(View.VISIBLE);
+        isUsingGNSS = true;
     }
 
-    private void applyFused(boolean gpsUsed){
+    public void applyFused(){
+//        resetUI();
         tv_log_title.setText("Using FusedLocationProvider");
         log_sats.setVisibility(View.INVISIBLE);
-//        log_btns.setVisibility(View.INVISIBLE);
-        btn_reset.setEnabled(false);
-        btn_save.setEnabled(false);
-        btn_start.setEnabled(false);
         tv_num_sat.setText("N/A");
-        tv_subtitle.setText("Can't Log With FusedLocationProvider!");
-
-        if(gpsUsed){
-            fused_retriever.requestData();
-            gnss_retriever.stopGettingData();
-        } else {
-            fused_retriever.stopGettingData();
-        }
-
+        tv_fix_status.setVisibility(View.INVISIBLE);
+        gnss_retriever.setCanUpdateUI(false);
+        fused_retriever.setCanUpdateUI(true);
+        fused_retriever.requestData();
+        isUsingGNSS = false;
     }
 
+
     private void applyCurrentSettings(){
-        // FusedLocationProvider
-        if(Settings.getGpsChoice() == 1){
-            visibleUI();
-            applyFused(Settings.getGPS());
-        }
-        // GNSS Provider
-        else if(Settings.getGpsChoice() == 2){
-            visibleUI();
-            applyGNSS(Settings.getGPS());
-        }
-        // No Provider Selected
-        else {
-            invisibleUI();
-        }
 
         // GPS On
         if(Settings.getGPS()){
@@ -440,17 +400,29 @@ public class LogFragment extends Fragment   {
             switch_gnss.setText("GPS On");
             switch_gnss.setChecked(true);
             btn_map.setEnabled(true);
-            startService();
+//            startService();
+//            applyGNSS(true);
+//            if(isUsingGNSS)
+//            else
+//                fused_retriever.requestData();
+            gnss_retriever.requestData();
+
+            tv_update_freq.setVisibility(View.VISIBLE);
         }
         // GPS Off
         else{
-            tv_update_freq.setText("GPS is turned off");
+            tv_update_freq.setVisibility(View.INVISIBLE);
+            tv_log_title.setText("GPS is turned off!");
             switch_gnss.setText("GPS Off");
+            tv_fix_status.setVisibility(View.INVISIBLE);
             switch_gnss.setChecked(false);
             btn_map.setEnabled(false);
             resetList();
             resetUI();
-            stopService();
+//            stopService();
+            fused_retriever.stopGettingData();
+            gnss_retriever.stopGettingData();
+            isUsingGNSS = true;
 
         }
     }
@@ -530,4 +502,6 @@ public class LogFragment extends Fragment   {
         String temp = "Logged " + count + " lines";
         tv_subtitle.setText(temp);
     }
+
+    public boolean getIsUsingGNSS(){ return this.isUsingGNSS; }
 }

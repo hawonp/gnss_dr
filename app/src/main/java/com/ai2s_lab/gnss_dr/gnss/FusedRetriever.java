@@ -30,6 +30,7 @@ public class FusedRetriever {
     // constants
     private LocationCallback locationCallback;
     private Location lastKnownLocation;
+    private boolean canUpdateUI;
 
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -41,6 +42,7 @@ public class FusedRetriever {
 
     public FusedRetriever(LogFragment logFragment){
         this.logFragment = logFragment;
+        canUpdateUI = false;
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(logFragment.getContext());
 
@@ -99,7 +101,7 @@ public class FusedRetriever {
         if(location.hasSpeedAccuracy())
             speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
 
-        if(logFragment.isVisible()){
+        if(logFragment.isVisible() && canUpdateUI){
             logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
         }
 
@@ -107,6 +109,12 @@ public class FusedRetriever {
             logFragment.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), logFragment.getZoom()));
         }
 
+        if(logFragment.isLogging){
+
+        }
     }
 
+    public boolean getCanUpdateUI() { return this.canUpdateUI; }
+
+    public void setCanUpdateUI(boolean value) { this.canUpdateUI = value; }
 }

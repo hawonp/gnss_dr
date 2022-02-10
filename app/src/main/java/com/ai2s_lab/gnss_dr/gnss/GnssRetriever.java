@@ -38,6 +38,9 @@ import android.location.OnNmeaMessageListener;
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";
 
+    private int satCount;
+    private boolean canUpdateUI;
+
     //init location manager
     private final LocationManager my_location_manager;
     private LogFragment logFragment;
@@ -48,6 +51,8 @@ public class GnssRetriever {
     public GnssRetriever(Context context, LogFragment logFragment) {
         this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.logFragment = logFragment;
+        satCount = 0;
+        canUpdateUI = false;
     }
 
     //Listener for Nmea
@@ -59,6 +64,9 @@ public class GnssRetriever {
             Log.d(TAG, "Msg: " + s + " timestamp: " + l);
         }
     };
+
+
+
 
     //Listener for Location data
     private final LocationListener my_location_listener = new LocationListener() {
@@ -100,13 +108,13 @@ public class GnssRetriever {
             if(location.hasSpeedAccuracy())
                 speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
 
-            Bundle bundle = location.getExtras();
-
-            for (String key : bundle.keySet()){
-                Log.d(TAG, key + " = \"" + bundle.get(key) + "\"");
-
-            }
-            Log.d(TAG, String.valueOf(location.getProvider()));
+//            Bundle bundle = location.getExtras();
+//
+//            for (String key : bundle.keySet()){
+//                Log.d(TAG, key + " = \"" + bundle.get(key) + "\"");
+//
+//            }
+//            Log.d(TAG, String.valueOf(location.getProvider()));
 
 
             if(logFragment.isVisible()){
@@ -166,23 +174,16 @@ public class GnssRetriever {
         }
 
         @Override
+        public void onStopped(){
+            Log.d(TAG, "GNSS has stopped");
+        }
+        @Override
         public void onSatelliteStatusChanged(GnssStatus status) {
-            int satCount = status.getSatelliteCount();
-//            tv_num_sat.setText(satCount);
-
-            Log.i(TAG, "satellite count: " + satCount);
-
-            //            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
-
-//            if(logFragment.isLogging){
-//                String [] temp = {"", "", "", "", Integer.toString(satCount) , ""};
-//                logFragment.getLogger().addData(temp);
-//            }
-
+            int tempSatCount = status.getSatelliteCount();
 
             ArrayList<Satellite> satellites = new ArrayList<>();
 
-            for (int i = 0; i < satCount; i++) {
+            for (int i = 0; i < tempSatCount; i++) {
                 int sat_type = status.getConstellationType(i);
                 String sat_constellation_name = getConstellationName(sat_type);
                 int sat_vid = status.getSvid(i);
@@ -206,13 +207,23 @@ public class GnssRetriever {
                         logFragment.getLogger().addData(temp);
                     }
                 }
-
-
             }
 
-            if(logFragment.isVisible()){
+            satCount = satellites.size();
+
+            if(satCount > 3){
+                logFragment.applyGNSS();
+            } else {
+                if(logFragment.getIsUsingGNSS()){
+                    logFragment.applyFused();
+                }
+            }
+
+            if(logFragment.isVisible() && canUpdateUI){
                 logFragment.updateList(satellites);
                 logFragment.updateSatNum(satellites.size());
+                Log.i(TAG, "satellite count: " + satCount);
+
                 if(logFragment.isLogging){
                     logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
 
@@ -280,5 +291,11 @@ public class GnssRetriever {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+
+    public int getSatCount() { return this.satCount; }
+
+    public boolean getCanUpdateUI() { return this.canUpdateUI; }
+
+    public void setCanUpdateUI(boolean value) { this.canUpdateUI = value; }
 
 }

@@ -11,36 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="TextView"
+        android:text="Global Settings"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <RadioGroup
-        android:id="@+id/setting_radio_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_title">
-
-        <RadioButton
-            android:id="@+id/radio_btn_gnss"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="GNSS" />
-
-        <RadioButton
-            android:id="@+id/radio_btn_fused"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="FusedLocationProvider" />
-
-    </RadioGroup>
 
     <!-- Discrete slider -->
 
@@ -52,7 +27,7 @@
         android:layout_marginTop="10dp"
         android:text="GPS Update Frequency (In ms)"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_radio_group" />
+        app:layout_constraintTop_toBottomOf="@+id/settings_title" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/settings_slider"
