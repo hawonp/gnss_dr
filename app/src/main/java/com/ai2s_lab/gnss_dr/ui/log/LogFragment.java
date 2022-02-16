@@ -356,7 +356,7 @@ public class LogFragment extends Fragment   {
     public void applyFused(){
         tvLogTitle.setText("Using FusedLocationProvider");
         logSats.setVisibility(View.INVISIBLE);
-        tvNumSat.setText("-1");
+        tvNumSat.setText("N/A");
         tvFixStatus.setVisibility(View.INVISIBLE);
         gnssRetriever.setCanUpdateUI(false);
         fusedRetriever.setCanUpdateUI(true);
