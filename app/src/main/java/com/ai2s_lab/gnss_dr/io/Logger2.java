@@ -21,6 +21,10 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+/*
+    This version of the Logger utility class is not used (Only applicable for API 31+)
+ */
 public class Logger2 {
 
     private String TAG = "LOG";
