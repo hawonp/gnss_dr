@@ -15,7 +15,7 @@ GNSS_DR tracks and logs global navigation satellite systems (GNSS)
 1. Logs GPS information in CSV format to phone's Internal Storage folder
 
 ## System Requirements
-### Android Device
+### Android Device with [support for GNSS](https://docs.google.com/spreadsheets/d/1z6Yt9c4cyev1PB6VWEkbZtJGfoxAQ5UJnHyP24sFwlk/edit#gid=0)
 - Target SDK: API 30 (Android 11)
 - Minimum SDK: API 28 (Android 9)
 
@@ -23,3 +23,7 @@ GNSS_DR tracks and logs global navigation satellite systems (GNSS)
 - Android Studio Bumblebee
 
 ## How to Use GNSS_Logger
+
+## Authors
+- Hawon Park
+- Jeong Ho Shin
