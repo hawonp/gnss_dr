@@ -23,6 +23,9 @@ GNSS_DR tracks and logs global navigation satellite systems (GNSS)
 ### Software
 - Android Studio Bumblebee
 
+### API Requirements
+- Google Maps API Key (add to google_maps_api.xml)
+
 ## Authors
 - Hawon Park
 - Jeong Ho Shin
