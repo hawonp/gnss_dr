@@ -10,7 +10,6 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.ai2s_lab.gnss_dr.util.PermissionSupport;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import androidx.annotation.NonNull;
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        // request other permissions
+        // request required permissions
         permissionSupport = new PermissionSupport(this, this);
         if(permissionSupport.arePermissionsEnabled()){
             Log.d(TAG, "All Permissions Granted");

@@ -2,13 +2,10 @@ package com.ai2s_lab.gnss_dr.util;
 
 public class Settings {
 
-    private static int gps_choice = -1;
     private static boolean gps = false;
-    private static int update_frequency = 100;
+    private static int updateFrequency = 100;   //Unit: milliseconds
 
-    public Settings(){
-
-    }
+    public Settings(){}
 
     public static boolean getGPS(){
         return gps;
@@ -18,20 +15,11 @@ public class Settings {
         gps = !gps;
     }
 
-    public static int getGpsChoice(){
-        return gps_choice;
-    }
-
-    public static void setGpsChoice(int choice){
-        gps_choice = choice;
-    }
-
-
     public static int getUpdateFrequency() {
-        return update_frequency;
+        return updateFrequency;
     }
 
     public static void setUpdateFrequency(int choice) {
-        update_frequency = choice;
+        updateFrequency = choice;
     }
 }
