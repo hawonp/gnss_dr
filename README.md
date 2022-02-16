@@ -26,6 +26,15 @@ GNSS_DR tracks and logs global navigation satellite systems (GNSS)
 ### API Requirements
 - Google Maps API Key (add to google_maps_api.xml)
 
+## How to Use
+- When you first launch the application after building the source code, you will see a Settings tab.
+    - By default, the gps update frequency is set to 100ms but you can change this value with the slider
+- If you then switch to the log tab, you will see that the gps button at the top right is switched off
+    - Turn this switch button on to start tracking gps location
+    - As mentioned above, the default location manager provider is GNSS but will automatically switch to FusedLocationProvider in a DR scenario
+- You can use the start, reset, and save buttons in the bottom of the UI to log gps information accordingly
+- A swipe up map that displays the currently tracked latitutde and longitude of the phone is included to check your general location
+
 ## Authors
 - Hawon Park
 - Jeong Ho Shin
