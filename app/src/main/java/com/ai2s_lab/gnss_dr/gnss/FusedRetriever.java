@@ -2,13 +2,9 @@ package com.ai2s_lab.gnss_dr.gnss;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.os.Build;
-import android.os.Looper;
 import android.util.Log;
 
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
 import com.ai2s_lab.gnss_dr.util.Settings;
@@ -17,14 +13,10 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.Executor;
 
 public class FusedRetriever {
 

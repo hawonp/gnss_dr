@@ -17,6 +17,11 @@ public class PermissionSupport {
     private Context context;
     private Activity activity;
 
+    //Permissions related
+    private final int MULTIPLE_PERMISSIONS = 1023;
+    private List permissionList;
+
+    // List of required permissions
     private String[] permissions = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -25,32 +30,30 @@ public class PermissionSupport {
             Manifest.permission.INTERNET
     };
 
-    private List permission_list;
-    private final int MULTIPLE_PERMISSIONS = 1023;
-
     public PermissionSupport(Activity activity, Context context){
         this.activity = activity;
         this.context = context;
     }
 
+    // Check if required permissions are enabled.
     public boolean arePermissionsEnabled(){
-        int result;
-        permission_list = new ArrayList<>();
+        permissionList = new ArrayList<>();
 
         for(String pm : permissions){
             Log.i("PERMISSION", pm);
             if(ActivityCompat.checkSelfPermission(context, pm) != PackageManager.PERMISSION_GRANTED)
-                permission_list.add(pm);
+                permissionList.add(pm);
         }
 
-        if(permission_list.size() > 0 )
+        if(permissionList.size() > 0 )
             return false;
 
         return true;
     }
 
+    //Request for permissions in the list above.
     public void requestMultiplePermissions(){
-        ActivityCompat.requestPermissions(activity, (String[]) permission_list.toArray(new String[permission_list.size()]), MULTIPLE_PERMISSIONS);
+        ActivityCompat.requestPermissions(activity, (String[]) permissionList.toArray(new String[permissionList.size()]), MULTIPLE_PERMISSIONS);
     }
 
     public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){

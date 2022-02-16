@@ -25,10 +25,6 @@ public class Satellite {
         return type;
     }
 
-    public boolean isIs_used() {
-        return is_used;
-    }
-
     public double getElev() {
         return elev;
     }

@@ -1,27 +1,17 @@
 package com.ai2s_lab.gnss_dr.gnss;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.GnssMeasurementsEvent;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
-
-import com.ai2s_lab.gnss_dr.util.Settings;
-import com.google.android.gms.location.FusedLocationProviderClient;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 
-import com.ai2s_lab.gnss_dr.R;
-import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
+import com.ai2s_lab.gnss_dr.util.Settings;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.ui.log.LogFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,11 +19,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import android.location.OnNmeaMessageListener;
-
 
 public class GnssRetriever {
     private static final String TAG = "GNSSRetriever";

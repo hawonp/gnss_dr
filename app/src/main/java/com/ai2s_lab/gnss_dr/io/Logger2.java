@@ -4,17 +4,12 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import androidx.fragment.app.Fragment;
-
-import com.ai2s_lab.gnss_dr.MainActivity;
-import com.ai2s_lab.gnss_dr.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.opencsv.CSVWriter;
 
@@ -24,7 +19,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 public class Logger2 {

@@ -5,19 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.ai2s_lab.gnss_dr.databinding.FragmentSettingsBinding;
 import com.ai2s_lab.gnss_dr.util.Settings;
-import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
-import org.w3c.dom.Text;
 
 public class SettingsFragment extends Fragment {
 
