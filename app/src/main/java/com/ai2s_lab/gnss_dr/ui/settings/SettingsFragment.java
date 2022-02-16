@@ -20,23 +20,21 @@ public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 
     // UI Elements
-    private TextView settings_title;
-    private TextView slider_title;
+    private TextView settingsTitle;
+    private TextView sliderTitle;
 
     private Slider slider;
 
     // settings
-//    private Settings settings;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // initialize UI elements
-        settings_title = binding.settingsTitle;
+        settingsTitle = binding.settingsTitle;
         slider = binding.settingsSlider;
-        slider_title = binding.settingsSliderTitle;
+        sliderTitle = binding.settingsSliderTitle;
 
         slider.addOnChangeListener(new Slider.OnChangeListener() {
             @SuppressLint("RestrictedApi")
@@ -56,12 +54,12 @@ public class SettingsFragment extends Fragment {
     }
 
     public void invisibleUI(){
-        slider_title.setVisibility(View.INVISIBLE);
+        sliderTitle.setVisibility(View.INVISIBLE);
         slider.setVisibility(View.INVISIBLE);
     }
 
     public void visibleUI(){
-        slider_title.setVisibility(View.VISIBLE);
+        sliderTitle.setVisibility(View.VISIBLE);
         slider.setVisibility(View.VISIBLE);
 
     }
