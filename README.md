@@ -1,8 +1,8 @@
 # GNSS Logger
 hey this is a description
 
-# Features
+## Features
 
-# System Requirements
+## System Requirements
 
-# How to Use GNSS_Logger
+## How to Use GNSS_Logger
