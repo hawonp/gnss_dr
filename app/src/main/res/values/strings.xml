@@ -3,7 +3,7 @@
     <string name="title_activity_bottom_nav">BottomNavActivity</string>
     <string name="settings">Settings</string>
     <string name="map">Map</string>
-    <string name="log">Log</string>
+    <string name="log">GPS Logger</string>
     <string name="title">Title</string>
     <string name="subtitle">Subtitle</string>
     <string name="track_satellites">Track Satellites</string>
