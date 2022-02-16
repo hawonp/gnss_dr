@@ -14,6 +14,11 @@ import androidx.core.app.NotificationCompat;
 
 import com.ai2s_lab.gnss_dr.R;
 
+// TODO: Track GPS via Foreground Service
+/*
+    The original plan was to track GPS information using a Foreground Service but was no longer needed for our current experiments.
+    This code is left behind in case anyone else wishes to continue the code
+*/
 public class GnssService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     @Override
