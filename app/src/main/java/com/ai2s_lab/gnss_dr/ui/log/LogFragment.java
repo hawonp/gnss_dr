@@ -344,6 +344,7 @@ public class LogFragment extends Fragment   {
 
     public void applyGNSS(){
         tvLogTitle.setText("Using GNSS");
+        logSats.setVisibility(View.VISIBLE);
         gnssRetriever.setCanUpdateUI(true);
         fusedRetriever.setCanUpdateUI(false);
         gnssRetriever.requestData();
