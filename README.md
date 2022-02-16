@@ -3,8 +3,23 @@
 GNSS_DR tracks and logs global navigation satellite systems (GNSS) 
 
 ## Features
-1. Ability to track GPS information via GNSS or [FusedLocationProvider](https://developers.google.com/location-context/fused-location-provider)
+### GPS Features
+1. Ability to track GPS information via [GNSS](https://developer.android.com/guide/topics/sensors/gnss)
+    - Latitude, Longitude, Speed, Height, # of Sats, Bearing, Horizontal Accuracy, Vertical Accuracy, Speed Accuracy
+    - Individual Satellites (ID, GNSS Type, Elevation, Azim, C/NO)
+2. Ability to track GPS information via [FusedLocationProvider](https://developers.google.com/location-context/fused-location-provider)
+    - Latitude, Longitude, Speed, Height, Bearing, Horizontal Accuracy, Vertical Accuracy, Speed Accuracy
+3. Uses GNSS by default and swtiches to FusedLocationProvider when gps fix is unavailable
+
+### Logging Features
+1. Logs GPS information in CSV format to phone's Internal Storage folder
 
 ## System Requirements
+### Android Device
+- Target SDK: API 30 (Android 11)
+- Minimum SDK: API 28 (Android 9)
+
+### Software
+- Android Studio Bumblebee
 
 ## How to Use GNSS_Logger
