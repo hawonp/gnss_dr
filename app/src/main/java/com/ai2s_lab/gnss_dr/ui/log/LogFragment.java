@@ -389,7 +389,6 @@ public class LogFragment extends Fragment   {
             fused_retriever.stopGettingData();
             gnss_retriever.stopGettingData();
             isUsingGNSS = true;
-
         }
     }
 

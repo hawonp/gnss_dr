@@ -94,9 +94,9 @@ public class GnssRetriever {
             if(logFragment.isVisible()){
                 logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
 
-                if(location.hasAltitude() && logFragment.getSatCount() >= 4)
+                if(location.hasAltitude() && satCount >= 4)
                     logFragment.updateFixStatus("3D Fix");
-                else if(logFragment.getSatCount() >= 3){
+                else if(satCount >= 3){
                     logFragment.updateFixStatus("2D Fix");
                 } else {
                     logFragment.updateFixStatus("No Fix");
@@ -105,8 +105,6 @@ public class GnssRetriever {
             }
 
             String provider = location.getProvider();
-
-//            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
 
             if(logFragment.isLogging){
                 Log.d(TAG, "time logging: " + time_as_string);
