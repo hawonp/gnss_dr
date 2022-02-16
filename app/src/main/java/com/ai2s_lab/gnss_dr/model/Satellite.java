@@ -3,15 +3,15 @@ package com.ai2s_lab.gnss_dr.model;
 public class Satellite {
     private int id;
     private String type;
-    private boolean is_used;
+    private boolean isUsed;
     private double elev;
     private double azim;
     private double cno;
 
-    public Satellite(int id, String type, boolean is_used, double elev, double azim, double cno) {
+    public Satellite(int id, String type, boolean isUsed, double elev, double azim, double cno) {
         this.id = id;
         this.type = type;
-        this.is_used = is_used;
+        this.isUsed = isUsed;
         this.elev = elev;
         this.azim = azim;
         this.cno = cno;

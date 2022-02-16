@@ -2,7 +2,6 @@ package com.ai2s_lab.gnss_dr.gnss;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.location.GnssMeasurementsEvent;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,23 +28,24 @@ public class GnssRetriever {
     private boolean canUpdateUI;
 
     //init location manager
-    private final LocationManager my_location_manager;
+    private final LocationManager mLocationManager;
     private LogFragment logFragment;
 
     //Initial frequency for logging GNSS signals
-    private int log_frequency = Settings.getUpdateFrequency();
+    private int logFrequency = Settings.getUpdateFrequency();
 
     public GnssRetriever(Context context, LogFragment logFragment) {
-        this.my_location_manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.logFragment = logFragment;
         satCount = 0;
         canUpdateUI = false;
     }
 
     //Listener for Location data
-    private final LocationListener my_location_listener = new LocationListener() {
+    private final LocationListener mLocationListener = new LocationListener() {
         private static final String TAG = "LocationListener";
 
+        // On location change, collect all required GNSS data
         @Override
         public void onLocationChanged(@NonNull Location location) {
             double latitude = location.getLatitude();
@@ -54,13 +54,13 @@ public class GnssRetriever {
             double altitude = -1;
             double bearing = -1;
             double speed = -1;
-            double horizontal_accuracy = -1;
-            double vertical_accuracy = -1;
-            double speed_accuracy = -1;
-            long time_milli_long = location.getTime();
+            double horizontalAccuracy = -1;
+            double verticalAccuracy = -1;
+            double speedAccuracy = -1;
+            long timeMilliLong = location.getTime();
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-            String time_as_string = formatter.format(time_milli_long);
+            String timeAsString = formatter.format(timeMilliLong);
 
             location.getExtras();
             if(location.hasAltitude())
@@ -73,26 +73,18 @@ public class GnssRetriever {
                 speed = location.getSpeed();
 
             if(location.hasAccuracy()) {
-                horizontal_accuracy = location.getAccuracy();
+                horizontalAccuracy = location.getAccuracy();
             }
 
             if(location.hasVerticalAccuracy())
-                vertical_accuracy = location.getVerticalAccuracyMeters();
+                verticalAccuracy = location.getVerticalAccuracyMeters();
 
             if(location.hasSpeedAccuracy())
-                speed_accuracy = location.getSpeedAccuracyMetersPerSecond();
+                speedAccuracy = location.getSpeedAccuracyMetersPerSecond();
 
-//            Bundle bundle = location.getExtras();
-//
-//            for (String key : bundle.keySet()){
-//                Log.d(TAG, key + " = \"" + bundle.get(key) + "\"");
-//
-//            }
-//            Log.d(TAG, String.valueOf(location.getProvider()));
-
-
+            //Only update UI when UI is visible
             if(logFragment.isVisible()){
-                logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontal_accuracy, vertical_accuracy, speed_accuracy);
+                logFragment.updateChart(latitude, longitude, altitude, bearing, speed, horizontalAccuracy, verticalAccuracy, speedAccuracy);
 
                 if(location.hasAltitude() && logFragment.getSatCount() >= 4)
                     logFragment.updateFixStatus("3D Fix");
@@ -106,11 +98,10 @@ public class GnssRetriever {
 
             String provider = location.getProvider();
 
-//            first_line = new String[]{"Lat", "Long", "Speed", "Height", "NumSats", "Bearing", "Sat_ID", "Sat_Type", "Sat_Is_Used", "Sat_Elev", "Sat_Azim", "Sat_CNO"};
-
+            // If log fragment is logging, then update data.
             if(logFragment.isLogging){
-                Log.d(TAG, "time logging: " + time_as_string);
-                String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing), time_as_string};
+                Log.d(TAG, "time logging: " + timeAsString);
+                String [] temp = {Double.toString(latitude), Double.toString(longitude), Double.toString(speed), Double.toString(altitude), "" , Double.toString(bearing), timeAsString};
                 logFragment.getLogger().addData(temp);
                 logFragment.updateSubtitle(logFragment.getLogger().getDataCount());
             }
@@ -118,7 +109,7 @@ public class GnssRetriever {
             Log.d(TAG, "lat: " + latitude
                     + " long: " + longitude
                     + " alt: " + altitude
-                    + " acc: " + horizontal_accuracy
+                    + " acc: " + horizontalAccuracy
                     + " bearing: " + bearing
                     + " speed: " + speed);
             Log.d(TAG, "provider: " + provider);
@@ -129,17 +120,8 @@ public class GnssRetriever {
         }
     };
 
-    private final GnssMeasurementsEvent.Callback gnss_measurement_event = new GnssMeasurementsEvent.Callback() {
-        @Override
-        public void onGnssMeasurementsReceived(GnssMeasurementsEvent eventArgs) {
-            super.onGnssMeasurementsReceived(eventArgs);
-            eventArgs.getMeasurements();
-            eventArgs.getClock();
-        }
-    };
-
     //Listener for GNSS data (satellite info)
-    private final GnssStatus.Callback gnss_status_listener = new GnssStatus.Callback() {
+    private final GnssStatus.Callback gnssStatusListener = new GnssStatus.Callback() {
         private static final String TAG = "GnssStatusCallback";
 
         @Override
@@ -158,26 +140,26 @@ public class GnssRetriever {
             ArrayList<Satellite> satellites = new ArrayList<>();
 
             for (int i = 0; i < tempSatCount; i++) {
-                int sat_type = status.getConstellationType(i);
-                String sat_constellation_name = getConstellationName(sat_type);
-                int sat_vid = status.getSvid(i);
-                boolean sat_is_used = status.usedInFix(i);
-                double sat_elevation = round(status.getElevationDegrees(i), 5);
-                double sat_azim_degree = round(status.getAzimuthDegrees(i), 5);
-                double sat_car_t_noise_r = round(status.getCn0DbHz(i), 5);
-                if(sat_is_used){
-                    Log.d(TAG, " satellite ID: " + sat_vid
-                            + "  constellation type: " + sat_constellation_name
-                            + " satellite used: " + sat_is_used
-                            + " elevation: " + sat_elevation
-                            + " azimuth: " + sat_azim_degree
-                            + " carrier2noiseR: " + sat_car_t_noise_r);
+                int satType = status.getConstellationType(i);
+                String satConstellationName = getConstellationName(satType);
+                int satVid = status.getSvid(i);
+                boolean satIsUsed = status.usedInFix(i);
+                double satElevation = round(status.getElevationDegrees(i), 5);
+                double satAzimDegree = round(status.getAzimuthDegrees(i), 5);
+                double satCarToNoiseRatio = round(status.getCn0DbHz(i), 5);
+                if(satIsUsed){
+                    Log.d(TAG, " satellite ID: " + satVid
+                            + "  constellation type: " + satConstellationName
+                            + " satellite used: " + satIsUsed
+                            + " elevation: " + satElevation
+                            + " azimuth: " + satAzimDegree
+                            + " carrier2noiseR: " + satCarToNoiseRatio);
 
-                    Satellite satellite = new Satellite(sat_vid, sat_constellation_name, sat_is_used, sat_elevation, sat_azim_degree, sat_car_t_noise_r);
+                    Satellite satellite = new Satellite(satVid, satConstellationName, satIsUsed, satElevation, satAzimDegree, satCarToNoiseRatio);
                     satellites.add(satellite);
 
                     if(logFragment.isLogging){
-                        String [] temp = {"", "", "", "", "", "", Integer.toString(sat_vid), sat_constellation_name, Boolean.toString(sat_is_used), Double.toString(sat_elevation), Double.toString(sat_azim_degree), Double.toString(sat_car_t_noise_r)};
+                        String [] temp = {"", "", "", "", "", "", Integer.toString(satVid), satConstellationName, Boolean.toString(satIsUsed), Double.toString(satElevation), Double.toString(satAzimDegree), Double.toString(satCarToNoiseRatio)};
                         logFragment.getLogger().addData(temp);
                     }
                 }
@@ -210,20 +192,20 @@ public class GnssRetriever {
 
     @SuppressLint("MissingPermission")
     public void requestData() {
-        boolean isEnabled = my_location_manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isEnabled) {
-            my_location_manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, log_frequency, 0.0f, my_location_listener);
-            my_location_manager.registerGnssStatusCallback(gnss_status_listener, null);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, logFrequency, 0.0f, mLocationListener);
+            mLocationManager.registerGnssStatusCallback(gnssStatusListener, null);
         }
     }
 
     public void stopGettingData() {
-        my_location_manager.removeUpdates(my_location_listener);
-        my_location_manager.unregisterGnssStatusCallback(gnss_status_listener);
+        mLocationManager.removeUpdates(mLocationListener);
+        mLocationManager.unregisterGnssStatusCallback(gnssStatusListener);
     }
 
-    private String getConstellationName(int type_no) {
-        switch(type_no) {
+    private String getConstellationName(int typeNo) {
+        switch(typeNo) {
             case 0:
                 return "Unknown";
             case 1:
@@ -247,13 +229,13 @@ public class GnssRetriever {
     //get
     //log_frequency
     public int getLogFrequency() {
-        return log_frequency;
+        return logFrequency;
     }
 
     //set
     //log_frequency
-    public void setLogFrequency(int log_freq) {
-        log_frequency = log_freq;
+    public void setLogFrequency(int logFreq) {
+        logFrequency = logFreq;
     }
 
     public static double round(double value, int places) {

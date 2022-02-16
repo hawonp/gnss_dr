@@ -61,7 +61,6 @@ public class FusedRetriever {
 
     @SuppressLint("MissingPermission")
     public void requestData(){
-//        LocationServices.getFusedLocationProviderClient(logFragment.getContext());
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
