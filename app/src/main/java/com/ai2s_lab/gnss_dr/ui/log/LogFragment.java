@@ -3,7 +3,6 @@ package com.ai2s_lab.gnss_dr.ui.log;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +17,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.ai2s_lab.gnss_dr.R;
 import com.ai2s_lab.gnss_dr.databinding.FragmentLogBinding;
-import com.ai2s_lab.gnss_dr.dropbox.DropboxClient;
 import com.ai2s_lab.gnss_dr.gnss.FusedRetriever;
 import com.ai2s_lab.gnss_dr.gnss.GnssRetriever;
-import com.ai2s_lab.gnss_dr.gnss.GnssService;
 import com.ai2s_lab.gnss_dr.io.Logger;
 import com.ai2s_lab.gnss_dr.model.Satellite;
 import com.ai2s_lab.gnss_dr.util.LogListAdapter;
@@ -93,16 +89,11 @@ public class LogFragment extends Fragment   {
 
     // constants for map
     private static final float DEFAULT_ZOOM = 17;
-    private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
 
     private GoogleMap map;
     private MapView mapView;
     private BottomSheetDialog bottomSheetDialog;
     private boolean dialogShown;
-
-    // dropbox client
-    private DropboxClient dropboxClient;
 
     // Service constant
     private boolean serviceOn;
@@ -176,12 +167,6 @@ public class LogFragment extends Fragment   {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 logger.saveDataToFile();
-                dropboxClient = new DropboxClient();
-                if(dropboxClient.uploadFile(logger.getFilePath(), logger.getFileName())){
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Uploaded to Dropbox", Snackbar.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Upload failed", Snackbar.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -193,10 +178,6 @@ public class LogFragment extends Fragment   {
             }
         });
 
-        // initialize google map
-//        SupportMapFragment mapFragment = (SupportMapFragment) getParentFragmentManager().findFragmentById(R.id.map);
-//        assert mapFragment != null;
-//        mapFragment.getMapAsync(this);
         bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
 
@@ -212,7 +193,7 @@ public class LogFragment extends Fragment   {
         dialogShown = false;
 
 
-        // action handlers for logging buttons
+        //Action handlers for logging buttons
         //save button
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,18 +366,12 @@ public class LogFragment extends Fragment   {
 
 
     private void applyCurrentSettings(){
-
         // GPS On
         if(Settings.getGPS()){
             tv_update_freq.setText("Update Every " + Settings.getUpdateFrequency() + "ms");
             switch_gnss.setText("GPS On");
             switch_gnss.setChecked(true);
             btn_map.setEnabled(true);
-//            startService();
-//            applyGNSS(true);
-//            if(isUsingGNSS)
-//            else
-//                fused_retriever.requestData();
             gnss_retriever.requestData();
 
             tv_update_freq.setVisibility(View.VISIBLE);
@@ -411,27 +386,11 @@ public class LogFragment extends Fragment   {
             btn_map.setEnabled(false);
             resetList();
             resetUI();
-//            stopService();
             fused_retriever.stopGettingData();
             gnss_retriever.stopGettingData();
             isUsingGNSS = true;
 
         }
-    }
-
-    private void startService() {
-        serviceOn = true;
-        Intent serviceIntent = new Intent(getActivity(), GnssService.class);
-        serviceIntent.putExtra("inputExtra", "Foreground Service Example in Android");
-        ContextCompat.startForegroundService(getActivity(), serviceIntent);
-    }
-
-    private void stopService(){
-//        serviceIntent = new Intent(this.getActivity(), GnssService.class);
-//        if(serviceOn == true)
-//            stopService(serviceIntent);
-//        serviceOn = false;
-        getContext().stopService(new Intent(getActivity(), GnssService.class));
     }
 
     private void showMap(Bundle savedInstanceState){
@@ -443,18 +402,6 @@ public class LogFragment extends Fragment   {
             public void onMapReady(@NonNull GoogleMap googleMap) {
                 map = googleMap;
                 map.setMyLocationEnabled(true);
-//                // For dropping a marker at a point on the Map
-//                LatLng sydney = new LatLng(-34, 151);
-//                map.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-//
-//                // For zooming automatically to the location of the marker
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-//                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-//                LatLng start = new LatLng(Settings.getLatitude(), Settings.getLongtitude());
-//                map.addMarker(new MarkerOptions().position(start).title("GPS").snippet("Marker"));
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(start).zoom(DEFAULT_ZOOM).build();
-//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             }
         });
